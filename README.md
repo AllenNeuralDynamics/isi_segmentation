@@ -24,8 +24,6 @@ The class definition is as follows:
 | 14 | VISm | Medial visual area |
 
 
-
-
 ## Installation
 To use the predict-isi-segmentation library, either clone this repository and install the requirements listed in setup.py or install directly with pip.
 
@@ -46,18 +44,21 @@ The script should take four inputs:
 
 ```
 mkdir -p model
-gdown https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD -O ./model/model_version1.h5
+gdown https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD -O ./model/isi_segmentation_model.h5
 ```
 
 ## Run 
-To predict the label map for the sample sign map, run:
+To predict the label map for the sample sign map with the download model, run:
 ```
 python predict.py \
     --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5 \
     --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg \
     --label_map_path ./sample_data/661511116_372583_20180207_label_map.png \
+    --model_path ./model/isi_segmentation_model.h5
     --plot_segmentation True
 ```
+Please make sure you have already downloaded the trained model and update `model_path`. 
+
 
 ## Model output directory structure
 After running prediction, a directory will be created with the following structure
@@ -68,7 +69,7 @@ After running prediction, a directory will be created with the following structu
 ```      
 * `<experiment_name>.png`: prediction from the sign map, the filename is set to `label_map_path`
 
-* `<experiment_name>_label_visualize.png`: visualize the sign map and its resulting label map if `plot_segmentation` is set to `true`.
+* `<experiment_name>_visualize.png`: visualize the sign map and its resulting label map if `plot_segmentation` is set to `true`.
 
 An example of isi segmentation outputs is `./sample_data/labels/`
 
@@ -84,7 +85,7 @@ python ./integration_test.py
 ## Visualization
 
 If you would like to visualize the output label map, set `plot_segmentation` to True. 
-The plot will be saved as `_label_visualize.png` and stored in the same folder as the label map.
+The plot will be saved as `<experiment_name>_visualize.png` and stored in the same folder as the label map.
 
 
 

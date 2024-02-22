@@ -66,7 +66,7 @@ def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentat
     """
     assert os.path.isfile(hdf5_path), "hdf5_path not a valid file"
     assert label_map_path[-4:] == ".png", "The output label map will be saved as .png file"   
-    assert os.path.isfile(model_path), "model_path not a valid file, please download the trained model"
+    assert os.path.isfile(model_path), "model_path not a valid file, please download the trained model and update model_path"
      
     #----------------------------------
     # Extract sign map from hdf5 file and save to sign_map_path
