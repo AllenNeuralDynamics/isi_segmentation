@@ -137,3 +137,5 @@ dmypy.json
 
 # MacOs
 **/.DS_Store
+
+model/model_version1.h5
