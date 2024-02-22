@@ -42,23 +42,29 @@ The script should take four inputs:
 - label_map_path (str): the output label map for the given sign map
 - plot_segmentation (bool): True if plot the resulting label map after inference. False otherwise.
 
+## Download trained model
+
+```
+mkdir -p model
+gdown https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD -O ./model/model_version1.h5
+```
+
 ## Run 
 To predict the label map for the sample sign map, run:
 ```
 python predict.py \
-    --hdf5_path ./sample_data/processed_hdf5/661511116_372583_20180207_processed.hdf5 \
-    --sign_map_path ./sample_data/sign_maps/661511116_372583_20180207_processed.jpg \
-    --label_map_path ./sample_data/labels/661511116.png \
-    --plot_segmentation False
+    --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5 \
+    --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg \
+    --label_map_path ./sample_data/661511116_372583_20180207_label_map.png \
+    --plot_segmentation True
 ```
-
 
 ## Model output directory structure
 After running prediction, a directory will be created with the following structure
 ```console
     /path/to/outputs/
       ├── <experiment_name>.png
-      └── <experiment_name>_label_visualize.png
+      └── <experiment_name>_visualize.png
 ```      
 * `<experiment_name>.png`: prediction from the sign map, the filename is set to `label_map_path`
 

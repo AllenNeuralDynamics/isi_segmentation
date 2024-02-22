@@ -3,6 +3,7 @@ import h5py
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 """ constant variables for prediction"""
 # the shape of input of the UNet should be (512, 512)
@@ -30,7 +31,13 @@ CLASS_COLOR_MAP = {
 
 def print_arr_inf(array):
     """ Print the intensity information given an array """
-    print("Intensity info: {:.2f} ± {:.2f}, max={:.2f}, min={:.2f}, median={:.2f}".format(np.mean(array), np.std(array), np.max(array), np.min(array), np.median(array)))
+    print("Intensity info: {:.2f} ± {:.2f}, max={:.2f}, min={:.2f}, median={:.2f}".format(
+          np.mean(array), 
+          np.std(array), 
+          np.max(array), 
+          np.min(array), 
+          np.median(array))
+         )
 
 def Normalized(x):
     """ Normalize the value of input array to (0, 1) """
@@ -68,8 +75,8 @@ def read_img_forpred(image_path):
     image = image/255.0
     
     # the intensity of input sign map should be in range of 0.0 and 1.0 for prediction
-    assert np.min(img) >= 0.0
-    assert np.max(img) <= 1.0
+    assert np.min(image) >= 0.0
+    assert np.max(image) <= 1.0
     
     image = np.expand_dims(image, axis=0) ## [1, H, W]
     image = image.astype(np.float32)

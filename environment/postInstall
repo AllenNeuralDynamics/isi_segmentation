@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+conda update -n base -c defaults conda
+pip install tensorflow==2.9
+# pip install keras
+# pip install ipywidgets
+# pip uninstall -y fastapi starlette pydantic
+# pip install fastapi starlette pydantic
+# conda install -c conda-forge pydot
+# conda install -c conda-forge graphviz
+# pip install protobuf==3.20.*
+# conda install -c conda-forge pandas
+# conda install -c anaconda scikit-learn
+pip install gdown
+pip install opencv-python
+pip install scipy
+conda install -c conda-forge matplotlib
+conda install -c conda-forge jupyterlab
+
+set -e

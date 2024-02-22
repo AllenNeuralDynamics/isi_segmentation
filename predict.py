@@ -45,7 +45,7 @@ from isi_segmentation.utils import (
 from isi_segmentation.postprocess import post_process 
 
 
-def predict(hdf5_path, sign_map_path, label_map_path, plot_segmentation=False):
+def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentation=False):
     """ Predcit the label map for the sign map.
     
     Note that the label map will be saved as '.png' file with different value 
@@ -58,6 +58,7 @@ def predict(hdf5_path, sign_map_path, label_map_path, plot_segmentation=False):
         hdf5_path (str): path to the hdf5_path which contains the sign map
         sign_map_path (str): path to save input sign map
         label_map_path (str): path to save output label map
+        model_path (str): path to the trained isi-segmentation model
         plot_segmentation (bool): True if plot the resulting label map after inference. False otherwise.
         
     Return:
@@ -65,7 +66,8 @@ def predict(hdf5_path, sign_map_path, label_map_path, plot_segmentation=False):
     """
     assert os.path.isfile(hdf5_path), "hdf5_path not a valid file"
     assert label_map_path[-4:] == ".png", "The output label map will be saved as .png file"   
-    
+    assert os.path.isfile(model_path), "model_path not a valid file, please download the trained model"
+     
     #----------------------------------
     # Extract sign map from hdf5 file and save to sign_map_path
     #----------------------------------
@@ -87,13 +89,12 @@ def predict(hdf5_path, sign_map_path, label_map_path, plot_segmentation=False):
     #----------------------------------
     
     image = read_img_forpred(sign_map_path)  # resize sign map to shape (512, 512) for prediction 
-    assert image.shape == (512, 512)
+    assert image.shape == (1, 512, 512), f"The shape of input image is {image.shape}."
     
     #----------------------------------
     # Load model and predict on the sign map
     #----------------------------------
 
-    model_path = os.path.join("./model/model_version1.h5")
     model = tf.keras.models.load_model(model_path)
 
     print("Run prediction ...")
@@ -135,7 +136,7 @@ def predict(hdf5_path, sign_map_path, label_map_path, plot_segmentation=False):
     #----------------------------------
     
     if plot_segmentation == True:
-        savefig_path = label_map_path.replace(".png", "_label_visualize.png")
+        savefig_path = label_map_path.replace(".png", "_visualize.png")
         print(f"Plot segmentation, save to {savefig_path}")
         
         plot_img_label(sign_map_path, 
@@ -152,6 +153,8 @@ if __name__ == "__main__":
                         help='path to save the sign map')
     parser.add_argument('--label_map_path', type=str, default=None, required=True, 
                         help='path to save the label map')
+    parser.add_argument('--model_path', type=str, default=None, required=True, 
+                        help='path to the trained isi-segmentation model')
     parser.add_argument('--plot_segmentation', type=bool, default=False, 
                         help='plot segmentation after inference?')
     
