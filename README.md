@@ -60,7 +60,7 @@ mkdir -p model
 gdown 'https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD' -O ./model/isi_segmentation_model.h5
 ```
 
-## Run 
+## Usage 
 To predict the label map for the sample sign map with the download model, run:
 ```
 python predict.py \
