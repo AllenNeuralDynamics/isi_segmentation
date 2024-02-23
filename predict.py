@@ -1,22 +1,4 @@
 """Run inference on a sign map
-The sign map will be segmented into different regions.
-The output label map will be saved as '.png' file with different value 
-corresponds to different visual cortex areas. 
-The class definition is as follows:
-1: VISp 
-2: VISam 
-3: VISal 
-4: VISl
-5: VISrl 
-6: VISpl
-7: VISpm
-8: VISli
-9: VISpor
-10: VISrll 
-11: VISlla
-12: VISmma
-13: VISmmp 
-14: VISm
   
 The flow of prediction is as follows:
 - input: the sign map
@@ -32,27 +14,33 @@ The flow of prediction is as follows:
 import cv2
 import os
 import numpy as np
-from datetime import datetime
 import tensorflow as tf
 import argparse
 import copy
-from isi_segmentation.utils import (
-    extract_sign_map_from_hdf5,
-    read_img_forpred,
-    plot_img_label,
-)
 
+from datetime import datetime
+from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, plot_img_label
 from isi_segmentation.postprocess import post_process 
 
+def verify_image_shape(input_shape, expected_shape):
+    """Verify the image shape """
+    if input_shape != expected_shape:
+        raise ValueError(
+            f"The shape of input image is {input_shape}, not euqal to the expected shape {expected_shape}!")
 
-def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentation=False):
+def predict(
+    hdf5_path: str, 
+    sign_map_path: str, 
+    label_map_path: str, 
+    model_path: str, 
+    plot_segmentation: bool=False) -> None:
     """ Predcit the label map for the sign map.
     
-    Note that the label map will be saved as '.png' file with different value 
-    corresponds to different visual cortex areas in the label map. 
+    Note that the label map will be saved as '.png' file with different values
+    corresponding to different visual cortex areas. 
     The class defination is shown as follows:
-    1: VISp;  2: VISam; 3: VISal; 4: VISl; 5: VISrl; 6: VISpl; 7: VISpm; 
-    8: VISli; 9: VISpor; 10: VISrll; 11: VISlla; 12: VISmma; 13: VISmmp; 14: VISm; 
+    1: VISp,  2: VISam, 3: VISal, 4: VISl, 5: VISrl, 6: VISpl, 7: VISpm, 
+    8: VISli, 9: VISpor, 10: VISrll, 11: VISlla, 12: VISmma, 13: VISmmp, 14: VISm,
 
     Args:
         hdf5_path (str): path to the hdf5_path which contains the sign map
@@ -60,45 +48,54 @@ def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentat
         label_map_path (str): path to save output label map
         model_path (str): path to the trained isi-segmentation model
         plot_segmentation (bool): True if plot the resulting label map after inference. False otherwise.
-        
-    Return:
-        numpy array for input image
     """
-    assert os.path.isfile(hdf5_path), "hdf5_path not a valid file"
-    assert label_map_path[-4:] == ".png", "The output label map will be saved as .png file"   
-    assert os.path.isfile(model_path), "model_path not a valid file, please download the trained model and update model_path"
-     
+    if not os.path.isfile(model_path):
+        raise FileNotFoundError(
+            "model_path not a valid file, please download the trained model and update model_path")
+    
+    if label_map_path[-4:] != ".png":
+        raise NameError("The output label map will be saved as .png file")
+    
     #----------------------------------
-    # Extract sign map from hdf5 file and save to sign_map_path
+    # Extract sign map from hdf5 file and save to sign_map_path if it does not exist
     #----------------------------------
     
     print("---" * 20)
-    print(f"Extract sign map from {hdf5_path}")
-    extract_sign_map_from_hdf5(hdf5_path, sign_map_path)
+    if not os.path.isfile(sign_map_path):
+        if not os.path.isfile(hdf5_path):
+            raise FileNotFoundError("hdf5_path not a valid file")
         
-    assert os.path.isfile(sign_map_path), "sign_map_path not a valid file"   
+        print(f"Extract sign map from {hdf5_path}")
+        extract_sign_map_from_hdf5(hdf5_path, sign_map_path)
+    
+    if not os.path.isfile(sign_map_path):
+        raise FileNotFoundError("sign_map_path not a valid file")
     
     print(f"Load the sign map from {sign_map_path}")
     print("---" * 20)
 
     # Get the input sign map shape
-    sign_map = cv2.imread(sign_map_path, cv2.IMREAD_GRAYSCALE) # sign image shape: (height, width), (540, 640)
+    sign_map = cv2.imread(sign_map_path, cv2.IMREAD_GRAYSCALE) # sign image shape: (540, 640)
 
     #----------------------------------
     # Read in the sign map for prediction
     #----------------------------------
     
     image = read_img_forpred(sign_map_path)  # resize sign map to shape (512, 512) for prediction 
-    assert image.shape == (1, 512, 512), f"The shape of input image is {image.shape}."
+
+    verify_image_shape(image.shape, (1, 512, 512))
     
     #----------------------------------
     # Load model and predict on the sign map
     #----------------------------------
-
     model = tf.keras.models.load_model(model_path)
 
     print("Run prediction ...")
+    start_time = datetime.now()
     pred = model.predict(image, verbose=0)[0] 
+    end_time = datetime.now()
+    print('Prediction duration: {}'.format(end_time - start_time))
+        
     pred = np.argmax(pred, axis=-1)
 
     #----------------------------------
@@ -109,8 +106,8 @@ def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentat
     pred = cv2.resize(pred.astype(float), (sign_map.shape[1], sign_map.shape[0])) 
     pred = pred.astype(np.int32)
     
-    assert pred.shape == sign_map.shape
-
+    verify_image_shape(pred.shape, sign_map.shape)
+    
     # Post-process the output label map
     print("Run post-processing ...")
     closeIter = 5 
@@ -122,8 +119,9 @@ def predict(hdf5_path, sign_map_path, label_map_path, model_path, plot_segmentat
                              openIter, 
                              pred_dir_prefix)
     
-    assert post_pred.shape == sign_map.shape
-
+    verify_image_shape(post_pred.shape, sign_map.shape)
+    
+    
     #----------------------------------    
     # Save the label map to label_map_path
     #----------------------------------
@@ -150,7 +148,7 @@ if __name__ == "__main__":
     parser.add_argument('--hdf5_path', type=str, default=None, required=True, 
                         help='path to the hdf5 file which contains the testing sign map')
     parser.add_argument('--sign_map_path', type=str, default=None, required=True, 
-                        help='path to save the sign map')
+                        help='path to the sign map')
     parser.add_argument('--label_map_path', type=str, default=None, required=True, 
                         help='path to save the label map')
     parser.add_argument('--model_path', type=str, default=None, required=True, 

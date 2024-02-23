@@ -3,7 +3,7 @@ This is a repository for segmenting visual cortex areas for sign map.
 The model was trained on about 2000 isi-experiment data using UNet and TensorFlow.
 
 The sign map will be segmented into different regions and 14 cortex areas could be identified.
-The output label map will be saved as '.png' file with different value (i.e., 1, 2, 3 ...) 
+The output label map will be saved as '.png' file with different values (i.e., 1, 2, 3 ...) 
 corresponding to different visual cortex areas (i.e., VISp, VISam, VISal ...). 
 The class definition is as follows:  
 | Class | acronym | name | 
@@ -27,14 +27,14 @@ The class definition is as follows:
 ## Installation
 To use the predict-isi-segmentation library, clone this repository and install the requirements.
 
-#. First, ensure git is installed:
+1. First, ensure git is installed:
 ```
 git --version
 ```
-If 'git' is not recognized, install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+If `git` is not recognized, install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 
-#. Move into the directory where you want to place the repository folder, and then download it from GitHub:
+2. Move into the directory where you want to place the repository folder, and then download it from GitHub:
 
 ```
 cd <SOME_FOLDER>
@@ -42,7 +42,6 @@ git clone https://github.com/Di-Wang-AIND/predict_isi_segmentation.git
 cd predict_isi_segmentation
 pip install -r requirements.txt
 ```
-
 
 <!-- pip install predict-isi-segmentation -->
 
@@ -52,7 +51,7 @@ The script should take four inputs:
 - hdf5_path (str): the hdf5 file which contains the sign map
 - sign_map_path (str): the sign map extracted from .hdf5 file for prediction
 - label_map_path (str): the output label map for the given sign map
-- plot_segmentation (bool): True if plot the resulting label map after inference. False otherwise.
+- model_path (str): path to trained model (to download it, follow [here](#Download-trained-model))
 
 ## Download trained model
 
@@ -65,11 +64,10 @@ gdown 'https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD' -O ./mo
 To predict the label map for the sample sign map with the download model, run:
 ```
 python predict.py \
-    --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5 \
-    --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg \
-    --label_map_path ./sample_data/661511116_372583_20180207_label_map.png \
-    --model_path ./model/isi_segmentation_model.h5 \
-    --plot_segmentation False
+    --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5\
+    --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg\
+    --label_map_path ./sample_data/661511116_372583_20180207_label_map.png\
+    --model_path ./model/isi_segmentation_model.h5
 ```
 
 Or you could directly run 
@@ -77,7 +75,7 @@ Or you could directly run
 sh run.sh
 ```
 
-Please make sure you have already downloaded the trained model and update `model_path`. 
+Please make sure you have already downloaded the trained model (follow [here](#Download-trained-model)) and update `model_path`. 
 
 
 ## Model output directory structure
@@ -93,14 +91,6 @@ After running prediction, a directory will be created with the following structu
 
 An example of isi segmentation outputs is `./sample_data/labels/`
 
-
-
-<!-- ## Test
-Integration test for predict-isi-segmentation using the sample data, run:
-```
-cd integration_test
-python ./integration_test.py
-``` -->
 
 ## Visualization
 
