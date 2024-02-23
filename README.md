@@ -25,22 +25,20 @@ The class definition is as follows:
 
 
 ## Installation
-To use the predict-isi-segmentation library, clone this repository and install the requirements
-Install package
+To use the predict-isi-segmentation library, clone this repository and install the requirements.
 
 #. First, ensure git is installed:
 ```
 git --version
 ```
-If 'git' is not recognized, `install git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_.
-
+If 'git' is not recognized, install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 
 #. Move into the directory where you want to place the repository folder, and then download it from GitHub:
 
 ```
 cd <SOME_FOLDER>
-git clone https://github.com/danbider/lightning-pose.git
+git clone https://github.com/Di-Wang-AIND/predict_isi_segmentation.git
 cd predict_isi_segmentation
 pip install -r requirements.txt
 ```
@@ -60,7 +58,7 @@ The script should take four inputs:
 
 ```
 mkdir -p model
-gdown https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD -O ./model/isi_segmentation_model.h5
+gdown 'https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD' -O ./model/isi_segmentation_model.h5
 ```
 
 ## Run 
@@ -70,9 +68,15 @@ python predict.py \
     --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5 \
     --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg \
     --label_map_path ./sample_data/661511116_372583_20180207_label_map.png \
-    --model_path ./model/isi_segmentation_model.h5
-    --plot_segmentation True
+    --model_path ./model/isi_segmentation_model.h5 \
+    --plot_segmentation False
 ```
+
+Or you could directly run 
+```
+sh run.sh
+```
+
 Please make sure you have already downloaded the trained model and update `model_path`. 
 
 
