@@ -89,7 +89,7 @@ After running prediction, a directory will be created with the following structu
 
 * `<experiment_name>_visualize.png`: visualize the sign map and its resulting label map if `plot_segmentation` is set to `true`.
 
-An example of isi segmentation outputs is `./sample_data/labels/`
+An example of isi segmentation outputs is `./sample_data/`
 
 
 ## Visualization
