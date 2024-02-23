@@ -25,13 +25,29 @@ The class definition is as follows:
 
 
 ## Installation
-To use the predict-isi-segmentation library, either clone this repository and install the requirements listed in setup.py or install directly with pip.
-
+To use the predict-isi-segmentation library, clone this repository and install the requirements
 Install package
 
+#. First, ensure git is installed:
 ```
-pip install predict-isi-segmentation
+git --version
 ```
+If 'git' is not recognized, `install git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_.
+
+
+
+#. Move into the directory where you want to place the repository folder, and then download it from GitHub:
+
+```
+cd <SOME_FOLDER>
+git clone https://github.com/danbider/lightning-pose.git
+cd predict_isi_segmentation
+pip install -r requirements.txt
+```
+
+
+<!-- pip install predict-isi-segmentation -->
+
 
 The script should take four inputs:
 
