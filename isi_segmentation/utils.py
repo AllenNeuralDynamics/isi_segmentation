@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+
 """ constant variables for prediction"""
 # the shape of input of the UNet should be (512, 512)
 IMAGE_W = 512
@@ -65,6 +66,7 @@ def extract_sign_map_from_hdf5(hdf5_path: str, img_path: str) -> None:
 
 def read_img_forpred(image_path: str) -> np.ndarray:
     """ Read and preprocess the sign map. 
+
     Args:
         image_path: path to input image
     Return:
@@ -86,6 +88,7 @@ def read_img_forpred(image_path: str) -> np.ndarray:
 
 def plot_img_label(sign_map_path: str, label_map_path: str, savefig_path: str) -> None:
     """ Visualize the sign map and label map 
+    
     Args:
         sign_map_path: path to the sign map
         label_map_path: path to the label map

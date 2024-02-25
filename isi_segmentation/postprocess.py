@@ -4,16 +4,17 @@ import cv2
 import scipy
 import numpy as np
 import os
-np
+
+
 def close_open(img: np.ndarray, closeIter: int, openIter: int) -> np.ndarray:
     """ Use open/close operations to eliminate isolated pixels. 
-    
+
     Args:
-        img: numpy array
-        closeIter: int
-        openIter: int
+        img: input image
+        closeIter: iterations for binary closing
+        openIter: iterations for binary opening
     Return:
-        numpy array
+        output image
     """
     # extract uniqule values in img
     img_flat = img.flatten()
@@ -40,11 +41,11 @@ def post_process(
     openIter: int, 
     pred_dir_prefix: str) -> np.ndarray:
     """ Post-processing operations on the prediction
-    
+
     Args:
-        pred: numpy array for the model prediction
-        closeIter: int
-        openIter: int
+        pred: the model prediction
+        closeIter: iterations for binary closing
+        openIter: iterations for binary opening
         pred_dir_prefix: path to save the post-processed image 
         
     Return:

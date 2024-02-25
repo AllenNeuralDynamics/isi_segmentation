@@ -83,6 +83,7 @@ def predict(
     #----------------------------------
     # Load model and predict on the sign map
     #----------------------------------
+    
     model = tf.keras.models.load_model(model_path)
 
     print("Run prediction ...")
