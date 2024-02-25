@@ -20,13 +20,9 @@ import copy
 
 from datetime import datetime
 from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, plot_img_label
+from isi_segmentation.utils import verify_image_shape
 from isi_segmentation.postprocess import post_process 
 
-def verify_image_shape(input_shape, expected_shape):
-    """Verify the image shape """
-    if input_shape != expected_shape:
-        raise ValueError(
-            f"The shape of input image is {input_shape}, not euqal to the expected shape {expected_shape}!")
 
 def predict(
     hdf5_path: str, 
@@ -43,11 +39,11 @@ def predict(
     8: VISli, 9: VISpor, 10: VISrll, 11: VISlla, 12: VISmma, 13: VISmmp, 14: VISm,
 
     Args:
-        hdf5_path (str): path to the hdf5_path which contains the sign map
-        sign_map_path (str): path to save input sign map
-        label_map_path (str): path to save output label map
-        model_path (str): path to the trained isi-segmentation model
-        plot_segmentation (bool): True if plot the resulting label map after inference. False otherwise.
+        hdf5_path: path to the hdf5_path which contains the sign map
+        sign_map_path: path to save input sign map
+        label_map_path: path to save output label map
+        model_path: path to the trained isi-segmentation model
+        plot_segmentation: True if plot the resulting label map after inference. False otherwise.
     """
     if not os.path.isfile(model_path):
         raise FileNotFoundError(
@@ -82,7 +78,6 @@ def predict(
     #----------------------------------
     
     image = read_img_forpred(sign_map_path)  # resize sign map to shape (512, 512) for prediction 
-
     verify_image_shape(image.shape, (1, 512, 512))
     
     #----------------------------------
@@ -105,7 +100,6 @@ def predict(
     # Resize to original sign map shape
     pred = cv2.resize(pred.astype(float), (sign_map.shape[1], sign_map.shape[0])) 
     pred = pred.astype(np.int32)
-    
     verify_image_shape(pred.shape, sign_map.shape)
     
     # Post-process the output label map
@@ -118,9 +112,7 @@ def predict(
                              closeIter, 
                              openIter, 
                              pred_dir_prefix)
-    
     verify_image_shape(post_pred.shape, sign_map.shape)
-    
     
     #----------------------------------    
     # Save the label map to label_map_path
