@@ -40,9 +40,9 @@ If `git` is not recognized, install [git](https://git-scm.com/book/en/v2/Getting
 cd <SOME_FOLDER>
 git clone https://github.com/Di-Wang-AIND/predict_isi_segmentation.git
 cd predict_isi_segmentation
-pip install -r requirements.txt
+pip install -e .
 ```
-
+<!-- pip install -r requirements.txt -->
 <!-- pip install predict-isi-segmentation -->
 
 

@@ -30,7 +30,7 @@ def predict(
     label_map_path: str, 
     model_path: str, 
     plot_segmentation: bool=False) -> None:
-    """ Predcit the label map for the sign map.
+    """ Predict the label map for the sign map.
     
     Note that the label map will be saved as '.png' file with different values
     corresponding to different visual cortex areas. 
