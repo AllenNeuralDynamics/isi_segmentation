@@ -19,10 +19,9 @@ import argparse
 import copy
 
 from datetime import datetime
-from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, plot_img_label
-from isi_segmentation.utils import verify_image_shape
+from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, verify_image_shape
 from isi_segmentation.postprocess import post_process 
-
+from isi_segmentation.plot import plot_img_label
 
 def predict(
     hdf5_path: str, 
@@ -99,7 +98,7 @@ def predict(
     #----------------------------------
 
     # Resize to original sign map shape
-    pred = cv2.resize(pred.astype(float), (sign_map.shape[1], sign_map.shape[0])) 
+    pred = cv2.resize(pred, (sign_map.shape[1], sign_map.shape[0]), interpolation=cv2.INTER_NEAREST)
     pred = pred.astype(np.int32)
     verify_image_shape(pred.shape, sign_map.shape)
     

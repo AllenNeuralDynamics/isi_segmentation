@@ -54,10 +54,17 @@ The script should take four inputs:
 - model_path (str): path to trained model (to download it, follow [here](#Download-trained-model))
 
 ## Download trained model
-
+<!-- 
 ```
 mkdir -p model
 gdown 'https://drive.google.com/uc?id=13ZSmV9CHDon4D7NwoPQTZub1WmSA5bPD' -O ./model/isi_segmentation_model.h5
+```
+-->
+
+<!-- retrain model on the clean data based on Shiella's feedback on 5-fold corss validation results -->
+```
+mkdir -p model
+gdown 'https://drive.google.com/uc?id=1X5C0avuOcjnbZDcS0hG6yujd2bY1hrK1' -O ./model/isi_segmentation_model.h5
 ```
 
 ## Usage 
