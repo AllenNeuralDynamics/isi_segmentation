@@ -25,7 +25,7 @@ The class definition is as follows:
 
 
 ## Installation
-To use the predict-isi-segmentation library, clone this repository and install the requirements.
+To use isi-segmentation library, clone this repository and install the requirements.
 
 1. First, ensure git is installed:
 ```
@@ -38,8 +38,8 @@ If `git` is not recognized, install [git](https://git-scm.com/book/en/v2/Getting
 
 ```
 cd <SOME_FOLDER>
-git clone https://github.com/Di-Wang-AIND/predict_isi_segmentation.git
-cd predict_isi_segmentation
+git clone https://github.com/AllenNeuralDynamics/isi_segmentation.git
+cd isi_segmentation
 pip install -e .
 ```
 <!-- pip install -r requirements.txt -->

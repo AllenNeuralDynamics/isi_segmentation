@@ -20,6 +20,6 @@ setup(
     author="Di Wang",
     install_requires=install_requires,
     author_email="di.wang@alleninstitute.org",
-    url="https://github.com/Di-Wang-AIND/predict_isi_segmentation",
+    url="https://github.com/AllenNeuralDynamics/isi_segmentation",
     keywords=["deep learning", "computer vision"],
 )
