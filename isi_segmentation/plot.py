@@ -81,7 +81,7 @@ def plot_img_label(
         for j in range(0, label_map.shape[1]):
             label_map_3d[i][j] = CLASS_COLOR_MAP[ label_map[i][j] ]    
             
-    ax[1].imshow(label_map_3d)
+    ax[1].imshow( (label_map_3d/label_map_3d.max() * 255).astype(np.uint8) )
     ax[1].set_title("Label map")
    
     #-------------------------------------

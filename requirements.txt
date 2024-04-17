@@ -1,5 +1,0 @@
-scipy
-opencv-python
-gdown
-matplotlib
-tensorflow

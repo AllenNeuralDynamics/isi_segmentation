@@ -15,20 +15,21 @@ import cv2
 import os
 import numpy as np
 import tensorflow as tf
-import argparse
 import copy
 
 from datetime import datetime
 from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, verify_image_shape
 from isi_segmentation.postprocess import post_process 
 from isi_segmentation.plot import plot_img_label
+from isi_segmentation.types import PathLike
+
 
 def predict(
-    hdf5_path: str, 
-    sign_map_path: str, 
-    label_map_path: str, 
-    model_path: str, 
-    plot_segmentation: bool=False) -> None:
+    hdf5_path: PathLike, 
+    sign_map_path: PathLike, 
+    label_map_path: PathLike, 
+    model_path: PathLike, 
+    plot_segmentation: bool=False) -> np.ndarray:
     """ Predict the label map for the sign map.
     
     Note that the label map will be saved as '.png' file with different values
@@ -60,7 +61,6 @@ def predict(
         if not os.path.isfile(hdf5_path):
             raise FileNotFoundError("hdf5_path not a valid file")
         
-        print(f"Extract sign map from {hdf5_path}")
         extract_sign_map_from_hdf5(hdf5_path, sign_map_path)
     
     if not os.path.isfile(sign_map_path):
@@ -133,21 +133,5 @@ def predict(
                       label_map_path, 
                       savefig_path)
 
+    return post_pred
     
-if __name__ == "__main__":
-    # parse commandline args
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--hdf5_path', type=str, default=None, required=True, 
-                        help='path to the hdf5 file which contains the testing sign map')
-    parser.add_argument('--sign_map_path', type=str, default=None, required=True, 
-                        help='path to the sign map')
-    parser.add_argument('--label_map_path', type=str, default=None, required=True, 
-                        help='path to save the label map')
-    parser.add_argument('--model_path', type=str, default=None, required=True, 
-                        help='path to the trained isi-segmentation model')
-    parser.add_argument('--plot_segmentation', type=bool, default=False, 
-                        help='plot segmentation after inference?')
-    
-    args = parser.parse_args()
-    
-    predict(**vars(args))

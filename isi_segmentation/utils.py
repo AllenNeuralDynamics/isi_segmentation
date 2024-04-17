@@ -44,6 +44,7 @@ def extract_sign_map_from_hdf5(hdf5_path: PathLike, img_path: PathLike) -> None:
 
         img = np.multiply(img, 255).astype(np.uint8)
         cv2.imwrite(img_path, img)
+        print(f"Extract sign map from {hdf5_path} and save to {img_path}")
 
         
 def read_img_forpred(image_path: PathLike) -> np.ndarray:

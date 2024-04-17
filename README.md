@@ -70,7 +70,7 @@ gdown 'https://drive.google.com/uc?id=1X5C0avuOcjnbZDcS0hG6yujd2bY1hrK1' -O ./mo
 ## Usage 
 To predict the label map for the sample sign map with the download model, run:
 ```
-python predict.py \
+python run_predict.py \
     --hdf5_path ./sample_data/661511116_372583_20180207_processed.hdf5\
     --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg\
     --label_map_path ./sample_data/661511116_372583_20180207_label_map.png\
