@@ -6,4 +6,4 @@ python predict.py \
     --sign_map_path ./sample_data/661511116_372583_20180207_sign_map.jpg\
     --label_map_path ./sample_data/661511116_372583_20180207_label_map.png\
     --model_path ./model/isi_segmentation_model.h5\
-    # --plot_segmentation True
+    --plot_segmentation True

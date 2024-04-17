@@ -3,6 +3,7 @@ import h5py
 import cv2
 import numpy as np
 import os
+from isi_segmentation.types import PathLike
 
 """ constant variables for prediction"""
 # the shape of input of the UNet should be (512, 512)
@@ -26,7 +27,7 @@ def Normalized(x: np.ndarray) -> np.ndarray:
     return normalized
 
 
-def extract_sign_map_from_hdf5(hdf5_path: str, img_path: str) -> None:
+def extract_sign_map_from_hdf5(hdf5_path: PathLike, img_path: PathLike) -> None:
     """ Extract sign map from hdf5 file and save to img_path """
     with h5py.File(hdf5_path, 'r') as hf:
         img = hf['visual_sign'][()]
@@ -45,7 +46,7 @@ def extract_sign_map_from_hdf5(hdf5_path: str, img_path: str) -> None:
         cv2.imwrite(img_path, img)
 
         
-def read_img_forpred(image_path: str) -> np.ndarray:
+def read_img_forpred(image_path: PathLike) -> np.ndarray:
     """ Read and preprocess the sign map. 
 
     Args:
