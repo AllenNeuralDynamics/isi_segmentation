@@ -13,8 +13,6 @@ if __name__ == "__main__":
                         help='path to save the label map')
     parser.add_argument('--model_path', type=str, default=None, required=True, 
                         help='path to the trained isi-segmentation model')
-    parser.add_argument('--plot_segmentation', type=bool, default=False, 
-                        help='plot segmentation after inference?')
     
     args = parser.parse_args()
     

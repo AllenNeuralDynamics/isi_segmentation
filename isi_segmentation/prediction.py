@@ -28,8 +28,7 @@ def predict(
     hdf5_path: PathLike, 
     sign_map_path: PathLike, 
     label_map_path: PathLike, 
-    model_path: PathLike, 
-    plot_segmentation: bool=False) -> np.ndarray:
+    model_path: PathLike) -> np.ndarray:
     """ Predict the label map for the sign map.
     
     Note that the label map will be saved as '.png' file with different values
@@ -43,12 +42,14 @@ def predict(
         sign_map_path: path to save input sign map
         label_map_path: path to save output label map
         model_path: path to the trained isi-segmentation model
-        plot_segmentation: True if plot the resulting label map after inference. False otherwise.
     """
     if not os.path.isfile(model_path):
         raise FileNotFoundError(
             "model_path not a valid file, please download the trained model and update model_path")
     
+    if not os.path.isfile(hdf5_path):
+        raise FileNotFoundError("hdf5_path not a valid file")
+
     if label_map_path[-4:] != ".png":
         raise NameError("The output label map will be saved as .png file")
     
@@ -58,9 +59,6 @@ def predict(
     
     print("---" * 20)
     if not os.path.isfile(sign_map_path):
-        if not os.path.isfile(hdf5_path):
-            raise FileNotFoundError("hdf5_path not a valid file")
-        
         extract_sign_map_from_hdf5(hdf5_path, sign_map_path)
     
     if not os.path.isfile(sign_map_path):
@@ -122,16 +120,15 @@ def predict(
     cv2.imwrite(label_map_path, post_pred)
     
     #----------------------------------
-    # Plot results if plot_segmentation is set to true
+    # Plot results 
     #----------------------------------
     
-    if plot_segmentation == True:
-        savefig_path = label_map_path.replace(".png", "_visualize.png")
-        print(f"Plot segmentation, save to {savefig_path}")
-        
-        plot_img_label(sign_map_path, 
-                      label_map_path, 
-                      savefig_path)
+    savefig_path = label_map_path.replace(".png", "_visualize.png")
+    print(f"Plot segmentation, save to {savefig_path}")
+
+    plot_img_label(sign_map_path, 
+                  label_map_path, 
+                  savefig_path)
 
     return post_pred
     

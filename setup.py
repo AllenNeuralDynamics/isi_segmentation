@@ -1,6 +1,6 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 # requirements
 install_requires = [
@@ -13,10 +13,11 @@ install_requires = [
 
 setup(
     name="isi_segmentation",
-    packages=["isi_segmentation"],
+    packages=find_packages(),
     version=VERSION,
     description="Supervised ISI segmentaion using tensorflow",
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     author="Di Wang",
     install_requires=install_requires,
     author_email="di.wang@alleninstitute.org",

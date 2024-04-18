@@ -25,14 +25,19 @@ The class definition is as follows:
 
 
 ## Installation
-To use isi-segmentation library, clone this repository and install the requirements.
+To use isi-segmentation library, either install directly with pip or clone this repository and install the requirements listed in setup.py.
 
+#### Method 1. pip install
+```
+pip install isi-segmentation
+```
+
+#### Method 2: conda from source
 1. First, ensure git is installed:
 ```
 git --version
 ```
 If `git` is not recognized, install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-
 
 2. Move into the directory where you want to place the repository folder, and then download it from GitHub:
 
@@ -42,16 +47,14 @@ git clone https://github.com/AllenNeuralDynamics/isi_segmentation.git
 cd isi_segmentation
 pip install -e .
 ```
-<!-- pip install -r requirements.txt -->
-<!-- pip install predict-isi-segmentation -->
-
 
 The script should take four inputs:
 
-- hdf5_path (str): the hdf5 file which contains the sign map
-- sign_map_path (str): the sign map extracted from .hdf5 file for prediction
-- label_map_path (str): the output label map for the given sign map
-- model_path (str): path to trained model (to download it, follow [here](#Download-trained-model))
+- hdf5_path (PathLike): path to the hdf5 file which contains the sign map
+- sign_map_path (PathLike): path to save the sign map extracted from .hdf5 file for prediction
+- label_map_path (PathLike): path to save the output label map
+- model_path (PathLike): path to trained model (to download it, follow [here](#Download-trained-model))
+
 
 ## Download trained model
 <!-- 
@@ -93,16 +96,14 @@ After running prediction, a directory will be created with the following structu
       └── <experiment_name>_visualize.png
 ```      
 * `<experiment_name>.png`: prediction from the sign map, the filename is set to `label_map_path`
-
-* `<experiment_name>_visualize.png`: visualize the sign map and its resulting label map if `plot_segmentation` is set to `true`.
+* `<experiment_name>_visualize.png`: visualize the sign map and its resulting label map
 
 An example of isi segmentation outputs is `./sample_data/`
 
 
 ## Visualization
 
-If you would like to visualize the output label map, set `plot_segmentation` to True. 
-The plot will be saved as `<experiment_name>_visualize.png` and stored in the same folder as the label map.
+To visualize the output label map, the plot will be saved as `<experiment_name>_visualize.png` and stored in the same folder as the label map.
 
 
 
