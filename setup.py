@@ -8,7 +8,7 @@ install_requires = [
     "opencv-python",
     "gdown",
     "matplotlib",
-    "tensorflow",
+    "tensorflow==2.9.0",
 ]
 
 setup(
@@ -22,4 +22,5 @@ setup(
     author_email="di.wang@alleninstitute.org",
     url="https://github.com/AllenNeuralDynamics/isi_segmentation",
     keywords=["deep learning", "computer vision"],
+    python_requires='>=3.7',
 )
