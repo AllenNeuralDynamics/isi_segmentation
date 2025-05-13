@@ -9,5 +9,10 @@ COPY git-askpass /
 
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
-COPY postInstall /
-RUN /postInstall
+RUN pip install -U --no-cache-dir \
+    scipy==1.12.0 \
+    opencv-python==4.9.0.80 \
+    gdown==5.1.0 \
+    matplotlib==3.8.0 \
+    h5py==3.10.0 \
+    tensorflow==2.9

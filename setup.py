@@ -4,10 +4,11 @@ VERSION = "0.1.1"
 
 # requirements
 install_requires = [
-    "scipy",
-    "opencv-python",
-    "gdown",
-    "matplotlib",
+    "scipy==1.12.0",
+    "opencv-python==4.9.0.80",
+    "gdown==5.1.0",
+    "matplotlib==3.8.0",
+    "h5py==3.10.0",
     "tensorflow==2.9.0",
 ]
 
