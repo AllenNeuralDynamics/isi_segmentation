@@ -140,3 +140,4 @@ dmypy.json
 
 model/model_version1.h5
 model/isi_segmentation_model.h5
+.vscode
