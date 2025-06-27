@@ -9,39 +9,47 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--hdf5_path', type=str, default=None, required=True, 
                         help='path to the hdf5 file which contains the testing sign map')
-    parser.add_argument('--sign_map_path', type=str, default='../results/sign_map.jpg',
-                        help='path to the sign map')
-    parser.add_argument('--label_map_path', type=str, default='../results/label_map.png',
-                        help='path to save the label map')
     parser.add_argument('--model_path', type=str, default='../data/isi_segmentation_model/isi_segmentation_model.h5',
-                        help='path to the trained isi-segmentation model')
+                        help='path to the trained isi-segmentation model')    
+    parser.add_argument('--output_dir', type=str, default='../results/', help='folder to store outputs')
     
     args = parser.parse_args()
     
-    # predict the label map for the sign map.
-    label_map = predict(**vars(args))
+    print(f"Using sample file: {args.hdf5_path}")
+    
+    segmentation_dir = os.path.join(args.output_dir, 'segmentation')
+    os.makedirs(segmentation_dir, exist_ok=True)
 
-    hdf5_file = args.hdf5_path
-    label_map_path = args.label_map_path
-    print(f"Using sample file: {hdf5_file}")
+    qc_dir = os.path.join(args.output_dir, 'qc')
+    os.makedirs(qc_dir, exist_ok=True)
+    
+    # predict the label map for the sign map.
+    data = ISIData.from_files(args.hdf5_path)
+
+    sign_map_path = os.path.join(segmentation_dir, 'sign_map.png')
+    label_map_path = os.path.join(segmentation_dir, 'label_map.png')
+
+    data.label_map_image = predict(
+        data=data,
+        sign_map_path=sign_map_path,
+        label_map_path=label_map_path,
+        model_path=args.model_path
+    )
+
     print(f"Using label map: {label_map_path}")
 
     # Instantiate loader and metrics/visualization
-    data = ISIData.from_files(hdf5_file, label_map_path=label_map_path)
     metrics = ISIMetricsAndVisualization(data)
 
     # Example output paths (these would be replaced with real ones in production)
-    output_dir_path = "/results/qc_images"
-    os.makedirs(output_dir_path, exist_ok=True)
-    sign_map_path = os.path.join(output_dir_path, "sign_map.png")
-    retinotopy_vertical_path = os.path.join(output_dir_path, "retinotopy_vertical.png")
-    retinotopy_horizontal_path = os.path.join(output_dir_path, "retinotopy_horizontal.png")
-    vasculature_path = os.path.join(output_dir_path, "vasculature.png")
-    isi_imaging_plane_path = os.path.join(output_dir_path, "defocus.png")
-    isi_overlay_path = os.path.join(output_dir_path, "overlay.png")
-    eccentricity_retinotopic_zero_path = os.path.join(output_dir_path, "eccentricity_retinotopic_zero.png")
-    eccentricity_v_one_centroid_path = os.path.join(output_dir_path, "eccentricity_v_one_centroid.png")
-    target_map_path = os.path.join(output_dir_path, "target_map.png")
+    retinotopy_vertical_path = os.path.join(qc_dir, "retinotopy_vertical.png")
+    retinotopy_horizontal_path = os.path.join(qc_dir, "retinotopy_horizontal.png")
+    vasculature_path = os.path.join(qc_dir, "vasculature.png")
+    isi_imaging_plane_path = os.path.join(qc_dir, "defocus.png")
+    isi_overlay_path = os.path.join(qc_dir, "overlay.png")
+    eccentricity_retinotopic_zero_path = os.path.join(qc_dir, "eccentricity_retinotopic_zero.png")
+    eccentricity_v_one_centroid_path = os.path.join(qc_dir, "eccentricity_v_one_centroid.png")
+    target_map_path = os.path.join(qc_dir, "target_map.png")
 
     # Call representative methods
     metrics.create_visual_sign_image(sign_map_path)

@@ -18,14 +18,14 @@ import tensorflow as tf
 import copy
 
 from datetime import datetime
-from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, verify_image_shape
+from isi_segmentation.utils import ISIData, normalize_sign_map, read_img_forpred, verify_image_shape
 from isi_segmentation.postprocess import post_process 
 from isi_segmentation.plot import plot_img_label
 from isi_segmentation.isi_types import PathLike
 
 
 def predict(
-    hdf5_path: PathLike, 
+    data: ISIData, 
     sign_map_path: PathLike, 
     label_map_path: PathLike, 
     model_path: PathLike) -> np.ndarray:
@@ -47,9 +47,6 @@ def predict(
         raise FileNotFoundError(
             "model_path not a valid file, please download the trained model and update model_path")
     
-    if not os.path.isfile(hdf5_path):
-        raise FileNotFoundError("hdf5_path not a valid file")
-
     if label_map_path[-4:] != ".png":
         raise NameError("The output label map will be saved as .png file")
     
@@ -58,8 +55,7 @@ def predict(
     #----------------------------------
     
     print("---" * 20)
-    if not os.path.isfile(sign_map_path):
-        extract_sign_map_from_hdf5(hdf5_path, sign_map_path)
+    normalize_sign_map(data.visual_sign, sign_map_path)
     
     if not os.path.isfile(sign_map_path):
         raise FileNotFoundError("sign_map_path not a valid file")

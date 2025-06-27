@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 import json
 import imageio
-from dataclasses import dataclass
+from isi_segmentation.utils import ISIData
 
 def eccentricity(az, alt, az_center, alt_center):
     """Compute the eccentricity map given azimuth, altitude, and their centers."""
@@ -51,56 +51,7 @@ def outline_mask(mask):
     outline = np.uint8(outline)
     return outline
 
-@dataclass
-class ISIData:
-    date: any
-    retinotopy_altitude: np.ndarray
-    retinotopy_azimuth: np.ndarray
-    visual_sign: np.ndarray
-    vasculature_image: np.ndarray
-    defocus_image: np.ndarray
-    visual_sign_pixel_size: float
-    vasculature_pixel_size: float
-    retinotopy_altitude_shape: tuple
-    retinotopy_azimuth_shape: tuple
-    visual_sign_shape: tuple
-    vasculature_image_shape: tuple
-    defocus_image_shape: tuple
-    label_map_image: np.ndarray = None
 
-    @classmethod
-    def from_files(cls, hdf5_file_path, label_map_path=None):
-        with h5py.File(hdf5_file_path, 'r') as f:
-            date = f.attrs['date']
-            retinotopy_altitude = f['retinotopy_altitude'][:]
-            retinotopy_azimuth = f['retinotopy_azimuth'][:]
-            visual_sign = f['visual_sign'][:]
-            vasculature_image = f['vasculature_image'][:]
-            defocus_image = f['defocus_image'][:]
-            visual_sign_pixel_size = f['visual_sign'].attrs['pixel_size_x_um']
-            vasculature_pixel_size = f['vasculature_image'].attrs['pixel_size_x_um']
-            retinotopy_altitude_shape = f['retinotopy_altitude'].shape
-            retinotopy_azimuth_shape = f['retinotopy_azimuth'].shape
-            visual_sign_shape = f['visual_sign'].shape
-            vasculature_image_shape = f['vasculature_image'].shape
-            defocus_image_shape = f['defocus_image'].shape
-        label_map_image = imageio.v2.imread(label_map_path) if label_map_path is not None else None
-        return cls(
-            date,
-            retinotopy_altitude,
-            retinotopy_azimuth,
-            visual_sign,
-            vasculature_image,
-            defocus_image,
-            visual_sign_pixel_size,
-            vasculature_pixel_size,
-            retinotopy_altitude_shape,
-            retinotopy_azimuth_shape,
-            visual_sign_shape,
-            vasculature_image_shape,
-            defocus_image_shape,
-            label_map_image
-        )
 
 class ISIMetricsAndVisualization:
     """Provides metrics calculation and visualization methods for ISI data using a data loader."""
