@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from isi_segmentation.types import PathLike
+from isi_segmentation.isi_types import PathLike
 
 """ constant variables for class and color definition"""
 CLASS_COLOR_MAP = {

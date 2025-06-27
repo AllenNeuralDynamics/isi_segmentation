@@ -21,7 +21,7 @@ from datetime import datetime
 from isi_segmentation.utils import extract_sign_map_from_hdf5, read_img_forpred, verify_image_shape
 from isi_segmentation.postprocess import post_process 
 from isi_segmentation.plot import plot_img_label
-from isi_segmentation.types import PathLike
+from isi_segmentation.isi_types import PathLike
 
 
 def predict(

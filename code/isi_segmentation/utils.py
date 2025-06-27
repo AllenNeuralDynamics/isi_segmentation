@@ -3,7 +3,7 @@ import h5py
 import cv2
 import numpy as np
 import os
-from isi_segmentation.types import PathLike
+from isi_segmentation.isi_types import PathLike
 
 """ constant variables for prediction"""
 # the shape of input of the UNet should be (512, 512)
