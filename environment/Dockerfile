@@ -1,4 +1,4 @@
-# hash:sha256:2644751aada5d8f00c437515d0f65b66d2773232b650c2e2de058f0a753a9147
+# hash:sha256:0715faea5f77333739e6211987ebce4c5c227b5f1eb06c5e6259f51de5237672
 ARG REGISTRY_HOST
 FROM $REGISTRY_HOST/codeocean/jupyterlab:3.6.1-miniconda4.12.0-python3.9-ubuntu20.04
 
@@ -21,7 +21,8 @@ RUN pip install -U --no-cache-dir \
     matplotlib==3.9.4 \
     opencv-python==4.11.0.86 \
     scipy==1.13.1 \
-    tensorflow==2.19.0
+    tensorflow==2.19.0 \
+    uv==0.7.15
 
 COPY postInstall /
 RUN /postInstall

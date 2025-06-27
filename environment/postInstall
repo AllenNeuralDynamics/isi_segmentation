@@ -1,21 +1,32 @@
 #!/usr/bin/env bash
 set -e
 
-# install updated version of code-server
-VERSION=4.100.3
-mkdir /.code-server
+# Step 1: Download and extract code-server
+mkdir -p /.code-server
+curl -L "https://github.com/coder/code-server/releases/download/v4.100.3/code-server-4.100.3-linux-amd64.tar.gz" -o /.code-server/code-server.tar.gz
+
 cd /.code-server
-curl -fL "https://github.com/coder/code-server/releases/download/v$VERSION/code-server-$VERSION-linux-amd64.tar.gz" \
-  | tar -xz
-ln -s /.code-server/code-server-$VERSION-linux-amd64/bin/code-server  /usr/bin/code-server
-cd -
+tar -xvf code-server.tar.gz
+rm code-server.tar.gz
 
+# Step 2: Link binary to /usr/bin
+ln -sf /.code-server/code-server-4.100.3-linux-amd64/bin/code-server /usr/bin/code-server
 
+# Step 3: Install extensions
 mkdir -p /.vscode/extensions
-code-server --extensions-dir=/.vscode/extensions --install-extension ms-toolsai.jupyter 
-code-server --extensions-dir=/.vscode/extensions --install-extension ms-python.python 
-code-server --extensions-dir=/.vscode/extensions --install-extension detachhead.basedpyright
-# code-server --extensions-dir=/.vscode/extensions --install-extension saoudrizwan.claude-dev
+
+extensions=(
+    "REditorSupport.R"
+    "continue.continue"
+    "ms-python.python"
+    "ms-toolsai.jupyter"
+    "reageyao.bioSyntax"
+    "saoudrizwan.claude-dev"
+)
+
+for ext in "${extensions[@]}"; do
+    code-server --extensions-dir="/.vscode/extensions" --install-extension "$ext"
+done
 
 # download and install vscode extension from file
 # for extensions not available in the default open-vsx registry
@@ -33,3 +44,6 @@ download_and_install_extension() {
 }
 download_and_install_extension github copilot 1.326.0
 download_and_install_extension github copilot-chat 0.27.3
+
+# install mcp 
+uv tool install aind-metadata-mcp
