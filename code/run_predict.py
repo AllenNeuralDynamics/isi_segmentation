@@ -2,7 +2,7 @@
 import argparse
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
-from aind_data_schema.core.quality_control import QCEvaluation, QCMetric
+from isi_segmentation.qc import make_quality_control
 import os
 
 if __name__ == "__main__":
@@ -67,6 +67,21 @@ if __name__ == "__main__":
         print("QC metrics and target map generated successfully.")
     except Exception as e:
         print(f"Error running generate_qc_metric_and_images: {e}")
+
+
+    qc = make_quality_control(
+        sign_map_path,
+        label_map_path,
+        retinotopy_vertical_path,
+        retinotopy_horizontal_path,
+        vasculature_path,
+        isi_imaging_plane_path,
+        isi_overlay_path,
+        eccentricity_retinotopic_zero_path,
+        eccentricity_v_one_centroid_path,
+        target_map_path
+    )
+    qc.write_standard_file(output_directory='../results')
 
     print("Run complete.")
     
