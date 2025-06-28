@@ -1,4 +1,4 @@
-# hash:sha256:ba57ea23e420feaa1d384b68fd8a9b857c2af46efcc05dbfb9039301a92de8c0
+# hash:sha256:3154e81dbdf0d7bcb103bda372d53a207d046a755b776bdf049ea2dc7a89d42f
 ARG REGISTRY_HOST
 FROM $REGISTRY_HOST/codeocean/jupyterlab:3.6.1-miniconda4.12.0-python3.9-ubuntu20.04
 
@@ -16,6 +16,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U --no-cache-dir \
+    aind-data-schema \
     gdown==5.2.0 \
     h5py==3.14.0 \
     imageio==2.37.0 \

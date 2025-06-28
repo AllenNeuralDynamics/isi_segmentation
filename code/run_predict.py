@@ -2,6 +2,7 @@
 import argparse
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
+from aind_data_schema.core.quality_control import QCEvaluation, QCMetric
 import os
 
 if __name__ == "__main__":
@@ -41,7 +42,6 @@ if __name__ == "__main__":
     # Instantiate loader and metrics/visualization
     metrics = ISIMetricsAndVisualization(data)
 
-    # Example output paths (these would be replaced with real ones in production)
     retinotopy_vertical_path = os.path.join(qc_dir, "retinotopy_vertical.png")
     retinotopy_horizontal_path = os.path.join(qc_dir, "retinotopy_horizontal.png")
     vasculature_path = os.path.join(qc_dir, "vasculature.png")
@@ -51,7 +51,6 @@ if __name__ == "__main__":
     eccentricity_v_one_centroid_path = os.path.join(qc_dir, "eccentricity_v_one_centroid.png")
     target_map_path = os.path.join(qc_dir, "target_map.png")
 
-    # Call representative methods
     metrics.create_visual_sign_image(sign_map_path)
     metrics.create_retinotopy_altitude_image(retinotopy_vertical_path)
     metrics.create_retinotopy_azimuth_image(retinotopy_horizontal_path)
@@ -69,5 +68,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error running generate_qc_metric_and_images: {e}")
 
-    print("Test run complete.")
+    print("Run complete.")
     
