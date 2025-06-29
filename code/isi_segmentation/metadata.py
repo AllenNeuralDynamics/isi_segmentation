@@ -1,8 +1,25 @@
-from aind_data_schema.core.quality_control import QCEvaluation, QualityControl, QCMetric, Stage, Status, QCStatus
+from aind_data_schema.core.quality_control import (
+    QCEvaluation,
+    QualityControl,
+    QCMetric,
+    Stage,
+    Status,
+    QCStatus,
+)
+from aind_data_schema.core.data_description import DataDescription, DataLevel
+from aind_data_schema.core.processing import Processing
 from aind_data_schema_models.modalities import Modality
 from isi_segmentation.isi_types import PathLike
 
 import datetime
+
+
+def make_data_description():
+    return None
+
+
+def make_processing():
+    return None
 
 
 def make_quality_control(
@@ -15,8 +32,9 @@ def make_quality_control(
     isi_overlay_path: PathLike,
     eccentricity_retinotopic_zero_path: PathLike,
     eccentricity_v_one_centroid_path: PathLike,
-    target_map_path: PathLike): 
-    
+    target_map_path: PathLike,
+):
+
     t = datetime.datetime.now()
     passed = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
 
@@ -40,12 +58,10 @@ def make_quality_control(
                 value="passed",
                 reference=label_map_path,
                 status_history=[passed],
-            ),            
+            ),
         ],
         notes="",
         created=t,
     )
 
-    return QualityControl(
-        evaluations=[segmentation_eval]
-    )
+    return QualityControl(evaluations=[segmentation_eval])
