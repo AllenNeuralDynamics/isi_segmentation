@@ -43,7 +43,7 @@ def make_quality_control(
         name="Sign map segmentation",
         description="Check areas were segmented properly",
         modality=Modality.POPHYS,
-        stage=Stage.PROCESSED,
+        stage=Stage.PROCESSING,
         metrics=[
             QCMetric(
                 name="Sign map",
