@@ -44,9 +44,6 @@ if __name__ == "__main__":
     parser.add_argument('--line_alpha', type=float, default=100.0, help='Alpha value for outline overlays')
     parser.add_argument('--ecc_zero_max', type=float, default=50.0, help='Max value for eccentricity_ret_zero windowing')
     parser.add_argument('--ecc_v1_max', type=float, default=50.0, help='Max value for eccentricity_V1_centroid windowing')
-    parser.add_argument('--target_mask_ten', type=float, default=10.0, help='Threshold for target mask ten')
-    parser.add_argument('--target_mask_five', type=float, default=5.0, help='Threshold for target mask five')
-    parser.add_argument('--target_mask_one', type=float, default=1.0, help='Threshold for target mask one')
 
     args = parser.parse_args()
 
