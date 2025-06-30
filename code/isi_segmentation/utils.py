@@ -6,8 +6,7 @@ import numpy as np
 import os
 import logging
 from dataclasses import dataclass
-from isi_segmentation.isi_types import PathLike
-
+from pathlib import Path
 
 @dataclass
 class ISIData:
@@ -109,7 +108,7 @@ def normalize_sign_map_forpred(img: np.ndarray) -> np.ndarray:
     return np.multiply(img, 255).astype(np.uint8)
 
 
-def read_img_forpred(image_path: PathLike) -> np.ndarray:
+def read_img_forpred(image_path: Path) -> np.ndarray:
     """Read and preprocess the sign map.
 
     Args:

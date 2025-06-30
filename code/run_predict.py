@@ -10,6 +10,8 @@ from isi_segmentation.metadata import (
 )
 import os, glob
 import logging
+from pathlib import Path
+
 
 if __name__ == "__main__":
     # parse commandline args
@@ -18,7 +20,7 @@ if __name__ == "__main__":
         "--input_pattern",
         type=str,
         default="../data/**/*_processed.hdf5",
-        help="path to the hdf5 file which contains the testing sign map",
+        help="pattern to the hdf5 file which contains the testing sign map",
     )
     parser.add_argument(
         "--model_path",
@@ -107,6 +109,7 @@ if __name__ == "__main__":
     metrics.create_retinotopy_altitude_image(retinotopy_vertical_path)
     metrics.create_retinotopy_azimuth_image(retinotopy_horizontal_path)
     metrics.create_vasculature_image(vasculature_path)
+    # TODO: missing overlay.png right now (isi_overlay_path)
     metrics.create_defocus_image(isi_imaging_plane_path)
 
     # Try to run QC metrics and target map generation

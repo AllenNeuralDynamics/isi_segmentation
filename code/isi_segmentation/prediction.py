@@ -17,6 +17,7 @@ import numpy as np
 import tensorflow as tf
 import copy
 import logging
+from pathlib import Path
 
 from datetime import datetime
 from isi_segmentation.utils import (
@@ -27,14 +28,13 @@ from isi_segmentation.utils import (
 )
 from isi_segmentation.postprocess import post_process
 from isi_segmentation.plot import plot_img_label
-from isi_segmentation.isi_types import PathLike
 
 
 def predict(
     data: ISIData,
-    sign_map_path: PathLike,
-    label_map_path: PathLike,
-    model_path: PathLike,
+    sign_map_path: Path,
+    label_map_path: Path,
+    model_path: Path,
 ) -> np.ndarray:
     """Predict the label map for the sign map.
 

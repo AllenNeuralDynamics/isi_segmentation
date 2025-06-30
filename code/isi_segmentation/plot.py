@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from isi_segmentation.isi_types import PathLike
+from pathlib import Path
 
 """ constant variables for class and color definition"""
 CLASS_COLOR_MAP = {
@@ -45,7 +45,7 @@ CLASS_NAME_MAP = {
 
 
 def plot_img_label(
-    sign_map_path: PathLike, label_map_path: PathLike, savefig_path: PathLike
+    sign_map_path: Path, label_map_path: Path, savefig_path: Path
 ) -> None:
     """Visualize the sign map and label map
 
