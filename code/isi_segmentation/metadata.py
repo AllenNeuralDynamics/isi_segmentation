@@ -41,7 +41,7 @@ def make_quality_control(
     segmentation_eval = QCEvaluation(
         name="Sign map segmentation",
         description="Check areas were segmented properly",
-        modality=Modality.POPHYS,
+        modality=Modality.ISI,
         stage=Stage.PROCESSING,
         metrics=[
             QCMetric(
@@ -73,7 +73,7 @@ def make_quality_control(
     raw_qc_eval = QCEvaluation(
         name="Raw ISI QC",
         description="Check quality of raw ISI data",
-        modality=Modality.POPHYS,
+        modality=Modality.ISI,
         stage=Stage.PROCESSING,
         metrics=[
              QCMetric(
