@@ -58,6 +58,13 @@ def make_quality_control(
                 reference=label_map_path,
                 status_history=[passed],
             ),
+            QCMetric(
+                name="Target map",
+                description="Qualitative evaluation of ISI target map",
+                value="passed",
+                reference=target_map_path,
+                status_history=[passed],
+            )
         ],
         notes="",
         created=t,
@@ -116,13 +123,6 @@ def make_quality_control(
                 description="Qualitative evaluation of eccentricity relative to primary visual cortex",
                 value="passed",
                 reference=eccentricity_v_one_centroid_path,
-                status_history=[passed],
-            ),
-            QCMetric(
-                name="Target map",
-                description="Qualitative evaluation of ISI target map",
-                value="passed",
-                reference=target_map_path,
                 status_history=[passed],
             )
         ],
