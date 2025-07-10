@@ -10,6 +10,7 @@ from scipy import ndimage
 import json
 import imageio
 from isi_segmentation.utils import ISIData
+from isi_segmentation.plot import CLASS_NAME_MAP
 import logging
 
 
@@ -138,18 +139,18 @@ class ISIMetricsAndVisualization:
 
         VISp_blob = None
         outlines = []
+        all_region_data = {}
 
         for annotated_region in annotated_regions_data:
             structure_id = annotated_region["structure_id"]
             region_mask = annotated_region["region_mask"]
 
             region_data = {}
-            region_data["region_mask"] = region_mask
 
             # compute centroid
             centroid = [np.mean(x) for x in np.where(region_mask)]
-            region_data["y_centroid"] = centroid[0]
-            region_data["x_centroid"] = centroid[1]
+            region_data["y_centroid"] = float(centroid[0])
+            region_data["x_centroid"] = float(centroid[1])
 
             # compute azimuth/altitude min, max, range, and bias
             (
@@ -157,24 +158,26 @@ class ISIMetricsAndVisualization:
                 region_data["azimuth_max"],
                 region_data["azimuth_range"],
                 region_data["azimuth_bias"],
-            ) = retinotopy_metric(region_mask, azimuth)
+            ) = map(float, retinotopy_metric(region_mask, azimuth))
             (
                 region_data["altitude_min"],
                 region_data["altitude_max"],
                 region_data["altitude_range"],
                 region_data["altitude_bias"],
-            ) = retinotopy_metric(region_mask, altitude)
+            ) = map(float, retinotopy_metric(region_mask, altitude))
 
             # eccentricity at centroid
-            region_data["eccentricity_at_centroid"] = eccentricity_ret_zero[
+            region_data["eccentricity_at_centroid"] = float(eccentricity_ret_zero[
                 round(region_data["y_centroid"]),
                 round(region_data["x_centroid"]),
-            ]
+            ])
 
             outlines.append(outline_mask(region_mask))
 
             if structure_id == 1:
                 VISp_blob = region_data
+            
+            all_region_data[CLASS_NAME_MAP[structure_id]] = region_data
 
         if VISp_blob is None:
             raise Exception(
@@ -317,6 +320,8 @@ class ISIMetricsAndVisualization:
         logging.info("saving " + target_map_path)
         target_im.save(target_map_path)
 
+        return all_region_data
+
     def create_visual_sign_image(self, sign_map_path):
         """Create and save a visual sign image using a colormap and alpha mask."""
         arr = self.data.visual_sign
@@ -365,72 +370,3 @@ class ISIMetricsAndVisualization:
         im = Image.fromarray(np.uint8(plt.cm.gray(arr) * 255))
         logging.info("saving " + isi_imaging_plane_path)
         im.save(isi_imaging_plane_path)
-
-
-if __name__ == "__main__":
-    import logging
-
-    logging.basicConfig(level=logging.INFO)
-    """Main function to test ISIDataLoader and ISIMetricsAndVisualization on sample data."""
-    import glob
-
-    sample_files = glob.glob("/data/isi_segmentation_model/*_processed.hdf5")
-    label_map_files = glob.glob("/data/isi_segmentation_model/*_label_map.png")
-    if not sample_files:
-        logging.error(
-            "No sample HDF5 files found in /data/isi_segmentation_model/"
-        )
-        sys.exit(1)
-    if not label_map_files:
-        logging.error(
-            "No label map PNG files found in /data/isi_segmentation_model/"
-        )
-        sys.exit(1)
-    hdf5_file = sample_files[0]
-    label_map_path = label_map_files[0]
-    logging.info(f"Using sample file: {hdf5_file}")
-    logging.info(f"Using label map: {label_map_path}")
-
-    # Instantiate loader and metrics/visualization
-    data = ISIData.from_files(hdf5_file, label_map_path=label_map_path)
-    metrics = ISIMetricsAndVisualization(data)
-
-    # Example output paths (these would be replaced with real ones in production)
-    output_dir_path = "/results/qc_images"
-    os.makedirs(output_dir_path, exist_ok=True)
-    sign_map_path = os.path.join(output_dir_path, "sign_map.png")
-    retinotopy_vertical_path = os.path.join(
-        output_dir_path, "retinotopy_vertical.png"
-    )
-    retinotopy_horizontal_path = os.path.join(
-        output_dir_path, "retinotopy_horizontal.png"
-    )
-    vasculature_path = os.path.join(output_dir_path, "vasculature.png")
-    isi_imaging_plane_path = os.path.join(output_dir_path, "defocus.png")
-    isi_overlay_path = os.path.join(output_dir_path, "overlay.png")
-    eccentricity_retinotopic_zero_path = os.path.join(
-        output_dir_path, "eccentricity_retinotopic_zero.png"
-    )
-    eccentricity_v_one_centroid_path = os.path.join(
-        output_dir_path, "eccentricity_v_one_centroid.png"
-    )
-    target_map_path = os.path.join(output_dir_path, "target_map.png")
-
-    # Call representative methods
-    metrics.create_visual_sign_image(sign_map_path)
-    metrics.create_retinotopy_altitude_image(retinotopy_vertical_path)
-    metrics.create_retinotopy_azimuth_image(retinotopy_horizontal_path)
-    metrics.create_vasculature_image(vasculature_path)
-    metrics.create_defocus_image(isi_imaging_plane_path)
-
-    # Try to run QC metrics and target map generation
-    try:
-        metrics.generate_qc_metric_and_images(
-            eccentricity_retinotopic_zero_path,
-            eccentricity_v_one_centroid_path,
-            target_map_path,
-        )
-        logging.info("QC metrics and target map generated successfully.")
-    except Exception as e:
-        logging.error(f"Error running generate_qc_metric_and_images: {e}")
-    logging.info("Test run complete.")

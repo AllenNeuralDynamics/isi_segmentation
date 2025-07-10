@@ -11,6 +11,7 @@ from isi_segmentation.metadata import (
 import os, glob
 import logging
 from pathlib import Path
+import json
 
 
 if __name__ == "__main__":
@@ -70,6 +71,7 @@ if __name__ == "__main__":
 
     sign_map_path = os.path.join(segmentation_dir, "sign_map.png")
     label_map_path = os.path.join(segmentation_dir, "label_map.png")
+    region_metrics_path = os.path.join(segmentation_dir, 'region_metrics.json')
 
     data.label_map_image = predict(
         data=data,
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 
     # Try to run QC metrics and target map generation
     try:
-        metrics.generate_qc_metric_and_images(
+        region_metrics = metrics.generate_qc_metric_and_images(
             eccentricity_retinotopic_zero_path,
             eccentricity_v_one_centroid_path,
             target_map_path,
@@ -122,6 +124,9 @@ if __name__ == "__main__":
         logging.info("QC metrics and target map generated successfully.")
     except Exception as e:
         logging.error(f"Error running generate_qc_metric_and_images: {e}")
+
+    with open(region_metrics_path, 'w') as f:
+        json.dump(region_metrics, f, indent=3)
 
     dd = make_data_description()
     if dd:
