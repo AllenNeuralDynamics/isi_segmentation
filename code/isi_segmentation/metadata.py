@@ -10,7 +10,6 @@ from aind_data_schema.core.data_description import DataDescription, DataLevel
 from aind_data_schema.core.processing import Processing
 from aind_data_schema_models.modalities import Modality
 from pathlib import Path
-
 import datetime
 
 

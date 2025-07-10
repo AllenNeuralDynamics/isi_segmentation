@@ -98,32 +98,36 @@ if __name__ == "__main__":
     )
     vasculature_path = os.path.join(qc_dir, "vasculature.png")
     isi_imaging_plane_path = os.path.join(qc_dir, "defocus.png")
-    isi_overlay_path = os.path.join(qc_dir, "overlay.png")
+    isi_overlay_path = os.path.join(qc_dir, "isi_overlay.png")
     eccentricity_retinotopic_zero_path = os.path.join(
         qc_dir, "eccentricity_retinotopic_zero.png"
     )
     eccentricity_v_one_centroid_path = os.path.join(
         qc_dir, "eccentricity_v_one_centroid.png"
     )
-    target_map_path = os.path.join(qc_dir, "target_map.png")
+    target_map_path = os.path.join(segmentation_dir, "target_map.png")
 
-    metrics.create_visual_sign_image(sign_map_path)
-    metrics.create_retinotopy_altitude_image(retinotopy_vertical_path)
-    metrics.create_retinotopy_azimuth_image(retinotopy_horizontal_path)
-    metrics.create_vasculature_image(vasculature_path)
-    # TODO: missing overlay.png right now (isi_overlay_path)
-    metrics.create_defocus_image(isi_imaging_plane_path)
+    # Create and save images using new non-IO create_* methods
+    sign_im, mask_im = metrics.create_visual_sign_image()
+    sign_im.save(sign_map_path)
+    retinotopy_altitude_im = metrics.create_retinotopy_altitude_image()
+    retinotopy_altitude_im.save(retinotopy_vertical_path)
+    retinotopy_azimuth_im = metrics.create_retinotopy_azimuth_image()
+    retinotopy_azimuth_im.save(retinotopy_horizontal_path)
+    vasculature_im = metrics.create_vasculature_image()
+    vasculature_im.save(vasculature_path)
+    defocus_im = metrics.create_defocus_image()
+    defocus_im.save(isi_imaging_plane_path)
+    # ISI overlay
+    isi_overlay_im = metrics.create_isi_overlay_image(vasculature_im, sign_im, mask_im)
+    isi_overlay_im.save(isi_overlay_path)
 
     # Try to run QC metrics and target map generation
-    try:
-        region_metrics = metrics.generate_qc_metric_and_images(
-            eccentricity_retinotopic_zero_path,
-            eccentricity_v_one_centroid_path,
-            target_map_path,
-        )
-        logging.info("QC metrics and target map generated successfully.")
-    except Exception as e:
-        logging.error(f"Error running generate_qc_metric_and_images: {e}")
+    region_metrics, ecc_zero_im, ecc_v1_im, target_map_im = metrics.generate_qc_metric_and_images()
+    ecc_zero_im.save(eccentricity_retinotopic_zero_path)
+    ecc_v1_im.save(eccentricity_v_one_centroid_path)
+    target_map_im.save(target_map_path)
+    logging.info("QC metrics and target map generated successfully.")
 
     with open(region_metrics_path, 'w') as f:
         json.dump(region_metrics, f, indent=3)

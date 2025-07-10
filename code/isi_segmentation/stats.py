@@ -4,6 +4,7 @@ import math
 import os
 import json
 import sys
+from typing import Any, Dict, List, Optional, Tuple, Union
 from PIL import Image
 import matplotlib.pyplot as plt
 from scipy import ndimage
@@ -14,7 +15,7 @@ from isi_segmentation.plot import CLASS_NAME_MAP
 import logging
 
 
-def eccentricity(az, alt, az_center, alt_center):
+def eccentricity(az: np.ndarray, alt: np.ndarray, az_center: float, alt_center: float) -> np.ndarray:
     """Compute the eccentricity map given azimuth, altitude, and their centers."""
     daz = az - az_center
     dalt = alt - alt_center
@@ -27,7 +28,7 @@ def eccentricity(az, alt, az_center, alt_center):
     return ecc
 
 
-def retinotopy_metric(mask, map):
+def retinotopy_metric(mask: np.ndarray, map: np.ndarray) -> Tuple[float, float, float, float]:
     """Calculate min, max, range, and bias for a retinotopy map within a mask."""
     ind = np.where(mask > 0)
     vals = map[ind]
@@ -36,7 +37,7 @@ def retinotopy_metric(mask, map):
     return (minv, maxv, maxv - minv, abs(minv + maxv))
 
 
-def window_level(input, cmin, cmax):
+def window_level(input: np.ndarray, cmin: float, cmax: float) -> np.ndarray:
     """Apply window leveling to an input array between cmin and cmax."""
     data = np.copy(input)
     crange = cmax - cmin
@@ -47,7 +48,7 @@ def window_level(input, cmin, cmax):
     return data
 
 
-def outline_mask(mask):
+def outline_mask(mask: np.ndarray) -> np.ndarray:
     """Generate an outline mask from a binary mask using Sobel edge detection."""
     edge_horizont = ndimage.sobel(mask, 0)
     edge_vertical = ndimage.sobel(mask, 1)
@@ -63,13 +64,13 @@ class ISIMetricsAndVisualization:
 
     def __init__(
         self,
-        data_loader,
-        altitude_scale=0.322,
-        azimuth_scale=0.383,
-        line_alpha=100.0,
-        ecc_zero_max=50.0,
-        ecc_v1_max=50.0,
-    ):
+        data_loader: ISIData,
+        altitude_scale: float = 0.322,
+        azimuth_scale: float = 0.383,
+        line_alpha: float = 100.0,
+        ecc_zero_max: float = 50.0,
+        ecc_v1_max: float = 50.0,
+    ) -> None:
         """Initialize with a loaded ISIDataLoader instance and set up image dimensions."""
         self.data = data_loader
         self.label_map_image = data_loader.label_map_image
@@ -95,11 +96,14 @@ class ISIMetricsAndVisualization:
 
     def generate_qc_metric_and_images(
         self,
-        eccentricity_retinotopic_zero_path,
-        eccentricity_v_one_centroid_path,
-        target_map_path,
-    ):
-        """Generate QC metrics and images for ISI segmentation and targeting using only the label_map_image."""
+    ) -> Tuple[Dict[str, Any], Image.Image, Image.Image, Image.Image]:
+        """Generate QC metrics and images for ISI segmentation and targeting using only the label_map_image.
+        Returns:
+            all_region_data (dict): Region metrics.
+            eccentricity_retinotopic_zero_im (PIL.Image): Eccentricity retinotopic zero overlay image.
+            eccentricity_v_one_centroid_im (PIL.Image): Eccentricity from V1 centroid overlay image.
+            target_map_im (PIL.Image): Target map overlay image.
+        """
         if self.label_map_image is None:
             raise Exception(
                 "label_map_image must be provided to ISIDataLoader for region extraction."
@@ -213,9 +217,7 @@ class ISIMetricsAndVisualization:
         foreground_im = foreground_im.resize(background_im.size)
 
         # alpha blend images
-        composite_im = Image.blend(foreground_im, background_im, 0.65)
-        logging.info("saving " + eccentricity_retinotopic_zero_path)
-        composite_im.save(eccentricity_retinotopic_zero_path)
+        composite_zero_im = Image.blend(foreground_im, background_im, 0.65)
 
         # --------------------------
         # This creates eccentricity from V1 centroid map and targeting map
@@ -227,9 +229,7 @@ class ISIMetricsAndVisualization:
         foreground_im = foreground_im.resize(background_im.size)
 
         # alpha blend images
-        composite_im = Image.blend(foreground_im, background_im, 0.65)
-        logging.info("saving " + eccentricity_v_one_centroid_path)
-        composite_im.save(eccentricity_v_one_centroid_path)
+        composite_v1_im = Image.blend(foreground_im, background_im, 0.65)
 
         # erosion structure element
         structure = ndimage.generate_binary_structure(2, 1)
@@ -317,56 +317,74 @@ class ISIMetricsAndVisualization:
 
         # composite the region outline with the target image
         target_im = Image.composite(blue_im, target_im, outline_im)
-        logging.info("saving " + target_map_path)
-        target_im.save(target_map_path)
 
-        return all_region_data
+        # Return all images and metrics
+        return all_region_data, composite_zero_im, composite_v1_im, target_im
 
-    def create_visual_sign_image(self, sign_map_path):
-        """Create and save a visual sign image using a colormap and alpha mask."""
+    def create_visual_sign_image(self) -> Tuple[Image.Image, Image.Image]:
+        """Create a visual sign image using a colormap and alpha mask and return the PIL image."""
         arr = self.data.visual_sign
-        visual_sign_shape = arr.shape
-        visual_sign_width = visual_sign_shape[1]
-        visual_sign_height = visual_sign_shape[0]
         alpha = 85.0
         threshold = 0.25
         mask = np.uint8((abs(arr) > threshold) * alpha)
-        mask_im = Image.fromarray(mask)
         arr = (arr + 1.0) / 2.0
         sign_im = Image.fromarray(np.uint8(plt.cm.jet(arr) * 255))
-        logging.info("saving " + sign_map_path)
-        sign_im.save(sign_map_path)
+        mask_im = Image.fromarray(mask)
+        return sign_im, mask_im
 
-    def create_retinotopy_altitude_image(self, retinotopy_vertical_path):
-        """Create and save a retinotopy altitude image from the input file."""
+    def create_retinotopy_altitude_image(self) -> Image.Image:
+        """Create a retinotopy altitude image from the input file and return the PIL image."""
         arr = self.data.retinotopy_altitude
         arr = (arr + math.pi) / (2.0 * math.pi)
         im = Image.fromarray(np.uint8(plt.cm.hsv(arr) * 255))
-        logging.info("saving " + retinotopy_vertical_path)
-        im.save(retinotopy_vertical_path)
+        return im
 
-    def create_retinotopy_azimuth_image(self, retinotopy_horizontal_path):
-        """Create and save a retinotopy azimuth image from the input file."""
+    def create_retinotopy_azimuth_image(self) -> Image.Image:
+        """Create a retinotopy azimuth image from the input file and return the PIL image."""
         arr = self.data.retinotopy_azimuth
         arr = (arr + math.pi) / (2.0 * math.pi)
         im = Image.fromarray(np.uint8(plt.cm.hsv(arr) * 255))
-        logging.info("saving " + retinotopy_horizontal_path)
-        im.save(retinotopy_horizontal_path)
+        return im
 
-    def create_vasculature_image(self, vasculature_path):
-        """Create and save a vasculature image from the input file."""
+    def create_vasculature_image(self) -> Image.Image:
+        """Create a vasculature image from the input file and return the PIL image."""
         arr = self.data.vasculature_image.astype(float)
         arr = arr / arr.max()
         im = Image.fromarray(np.uint8(plt.cm.gray(arr) * 255))
-        logging.info("saving " + vasculature_path)
-        im.save(vasculature_path)
-        png_vasculature_path = os.path.splitext(vasculature_path)[0] + ".png"
-        im.save(png_vasculature_path)
+        return im
 
-    def create_defocus_image(self, isi_imaging_plane_path):
-        """Create and save a defocus image from the input file."""
+    def create_defocus_image(self) -> Image.Image:
+        """Create a defocus image from the input file and return the PIL image."""
         arr = self.data.defocus_image.astype(float)
         arr = arr / arr.max()
         im = Image.fromarray(np.uint8(plt.cm.gray(arr) * 255))
-        logging.info("saving " + isi_imaging_plane_path)
-        im.save(isi_imaging_plane_path)
+        return im
+
+    def create_isi_overlay_image(self, vasculature_im: Image.Image, sign_im: Image.Image, mask_im: Image.Image) -> Image.Image:
+        """Create an ISI overlay image (visual sign over vasculature) with alpha mask and return the PIL image.
+        Parameters:
+            vasculature_im (PIL.Image): Vasculature image (already processed, but will be window-leveled and colormapped here).
+            sign_im (PIL.Image): Visual sign image (already processed and resized).
+            mask_im (PIL.Image): Alpha mask image (already processed and resized).
+        """
+        # Window-level the vasculature image to [0.1, 1] and apply gray colormap
+        vasculature_arr = np.array(vasculature_im)
+        # If the input is RGBA or RGB, convert to grayscale first
+        if vasculature_arr.ndim == 3:
+            # Only use the first channel if it's multi-channel (e.g., RGB)
+            vasculature_arr = vasculature_arr[..., 0]
+        vasculature_arr = vasculature_arr.astype(float)
+        if vasculature_arr.max() > 0:
+            vasculature_arr = (vasculature_arr - 0.1 * vasculature_arr.max()) / (0.9 * vasculature_arr.max())
+            vasculature_arr = np.clip(vasculature_arr, 0, 1)
+            vasculature_im_proc = Image.fromarray(np.uint8(plt.cm.gray(vasculature_arr)[:, :, 0] * 255) if vasculature_arr.ndim == 3 else np.uint8(plt.cm.gray(vasculature_arr) * 255))
+        else:
+            vasculature_im_proc = vasculature_im
+
+        # Resize vasculature to match sign image size
+        vasculature_im_proc = vasculature_im_proc.resize(sign_im.size)
+        mask_im = mask_im.resize(sign_im.size)
+
+        # Composite overlay
+        composite_im = Image.composite(sign_im, vasculature_im_proc, mask_im)
+        return composite_im
