@@ -42,11 +42,36 @@ if __name__ == "__main__":
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level",
     )
-    parser.add_argument('--altitude_scale', type=float, default=0.322, help='Scaling factor for altitude phase')
-    parser.add_argument('--azimuth_scale', type=float, default=0.383, help='Scaling factor for azimuth phase')
-    parser.add_argument('--line_alpha', type=float, default=100.0, help='Alpha value for outline overlays')
-    parser.add_argument('--ecc_zero_max', type=float, default=50.0, help='Max value for eccentricity_ret_zero windowing')
-    parser.add_argument('--ecc_v1_max', type=float, default=50.0, help='Max value for eccentricity_V1_centroid windowing')
+    parser.add_argument(
+        "--altitude_scale",
+        type=float,
+        default=0.322,
+        help="Scaling factor for altitude phase",
+    )
+    parser.add_argument(
+        "--azimuth_scale",
+        type=float,
+        default=0.383,
+        help="Scaling factor for azimuth phase",
+    )
+    parser.add_argument(
+        "--line_alpha",
+        type=float,
+        default=100.0,
+        help="Alpha value for outline overlays",
+    )
+    parser.add_argument(
+        "--ecc_zero_max",
+        type=float,
+        default=50.0,
+        help="Max value for eccentricity_ret_zero windowing",
+    )
+    parser.add_argument(
+        "--ecc_v1_max",
+        type=float,
+        default=50.0,
+        help="Max value for eccentricity_V1_centroid windowing",
+    )
 
     args = parser.parse_args()
 
@@ -71,7 +96,7 @@ if __name__ == "__main__":
 
     sign_map_path = os.path.join(segmentation_dir, "sign_map.png")
     label_map_path = os.path.join(segmentation_dir, "label_map.png")
-    region_metrics_path = os.path.join(segmentation_dir, 'region_metrics.json')
+    region_metrics_path = os.path.join(segmentation_dir, "region_metrics.json")
 
     data.label_map_image = predict(
         data=data,
@@ -93,9 +118,7 @@ if __name__ == "__main__":
     )
 
     retinotopy_vertical_path = os.path.join(qc_dir, "retinotopy_vertical.png")
-    retinotopy_horizontal_path = os.path.join(
-        qc_dir, "retinotopy_horizontal.png"
-    )
+    retinotopy_horizontal_path = os.path.join(qc_dir, "retinotopy_horizontal.png")
     vasculature_path = os.path.join(qc_dir, "vasculature.png")
     isi_imaging_plane_path = os.path.join(qc_dir, "defocus.png")
     isi_overlay_path = os.path.join(qc_dir, "isi_overlay.png")
@@ -123,13 +146,15 @@ if __name__ == "__main__":
     isi_overlay_im.save(isi_overlay_path)
 
     # Try to run QC metrics and target map generation
-    region_metrics, ecc_zero_im, ecc_v1_im, target_map_im = metrics.generate_qc_metric_and_images()
+    region_metrics, ecc_zero_im, ecc_v1_im, target_map_im = (
+        metrics.generate_qc_metric_and_images()
+    )
     ecc_zero_im.save(eccentricity_retinotopic_zero_path)
     ecc_v1_im.save(eccentricity_v_one_centroid_path)
     target_map_im.save(target_map_path)
     logging.info("QC metrics and target map generated successfully.")
 
-    with open(region_metrics_path, 'w') as f:
+    with open(region_metrics_path, "w") as f:
         json.dump(region_metrics, f, indent=3)
 
     dd = make_data_description()

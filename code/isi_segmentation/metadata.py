@@ -1,16 +1,12 @@
-from aind_data_schema.core.quality_control import (
-    QCEvaluation,
-    QualityControl,
-    QCMetric,
-    Stage,
-    Status,
-    QCStatus,
-)
+import datetime
+from pathlib import Path
+
 from aind_data_schema.core.data_description import DataDescription, DataLevel
 from aind_data_schema.core.processing import Processing
+from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
+                                                   QCStatus, QualityControl,
+                                                   Stage, Status)
 from aind_data_schema_models.modalities import Modality
-from pathlib import Path
-import datetime
 
 
 def make_data_description():
@@ -37,7 +33,6 @@ def make_quality_control(
     t = datetime.datetime.now()
     passed = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
 
-    s = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
     segmentation_eval = QCEvaluation(
         name="Sign map segmentation",
         description="Check areas were segmented properly",
@@ -64,7 +59,7 @@ def make_quality_control(
                 value="passed",
                 reference=target_map_path,
                 status_history=[passed],
-            )
+            ),
         ],
         notes="",
         created=t,
@@ -76,7 +71,7 @@ def make_quality_control(
         modality=Modality.ISI,
         stage=Stage.PROCESSING,
         metrics=[
-             QCMetric(
+            QCMetric(
                 name="Horizontal retinotopy",
                 description="Qualitative evaluation of horizontal retinotopy image",
                 value="passed",
@@ -124,7 +119,7 @@ def make_quality_control(
                 value="passed",
                 reference=eccentricity_v_one_centroid_path,
                 status_history=[passed],
-            )
+            ),
         ],
         notes="",
         created=t,

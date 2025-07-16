@@ -1,10 +1,11 @@
 """Helper plot functions"""
 
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 from pathlib import Path
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
 
 """ constant variables for class and color definition"""
 CLASS_COLOR_MAP = {

@@ -1,10 +1,11 @@
 """post processing function"""
 
-import scipy.ndimage as ni
-import cv2
-import scipy
-import numpy as np
 import os
+
+import cv2
+import numpy as np
+import scipy
+import scipy.ndimage as ni
 
 
 def close_open(img: np.ndarray, closeIter: int, openIter: int) -> np.ndarray:
@@ -57,9 +58,7 @@ def post_process(
     pr_labels = list(set(list(pred.flatten())))
     pr_labels.sort()
 
-    output_label = np.zeros(
-        shape=(pred.shape[0], pred.shape[1]), dtype=np.uint8
-    )
+    output_label = np.zeros(shape=(pred.shape[0], pred.shape[1]), dtype=np.uint8)
 
     for cur_class in pr_labels:
         mask = np.zeros(shape=(pred.shape[0], pred.shape[1]), dtype=np.uint8)
@@ -78,9 +77,7 @@ def post_process(
         )
 
         # Find largest contour in intermediate image
-        cnts, _ = cv2.findContours(
-            inter, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE
-        )
+        cnts, _ = cv2.findContours(inter, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         cnt = max(cnts, key=cv2.contourArea)
 
         # Output the largest blob, only keep one blob for each lcass

@@ -1,12 +1,13 @@
 """Helper data process functions"""
 
-import h5py
-import cv2
-import numpy as np
-import os
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+
+import cv2
+import h5py
+import numpy as np
+
 
 @dataclass
 class ISIData:
@@ -26,7 +27,7 @@ class ISIData:
     label_map_image: np.ndarray = None
 
     @classmethod
-    def from_files(cls, hdf5_file_path, label_map_path=None):
+    def from_files(cls, hdf5_file_path):
         with h5py.File(hdf5_file_path, "r") as f:
             date = f.attrs["date"]
             retinotopy_altitude = f["retinotopy_altitude"][:]
@@ -35,19 +36,13 @@ class ISIData:
             vasculature_image = f["vasculature_image"][:]
             defocus_image = f["defocus_image"][:]
             visual_sign_pixel_size = f["visual_sign"].attrs["pixel_size_x_um"]
-            vasculature_pixel_size = f["vasculature_image"].attrs[
-                "pixel_size_x_um"
-            ]
+            vasculature_pixel_size = f["vasculature_image"].attrs["pixel_size_x_um"]
             retinotopy_altitude_shape = f["retinotopy_altitude"].shape
             retinotopy_azimuth_shape = f["retinotopy_azimuth"].shape
             visual_sign_shape = f["visual_sign"].shape
             vasculature_image_shape = f["vasculature_image"].shape
             defocus_image_shape = f["defocus_image"].shape
-        label_map_image = (
-            imageio.v2.imread(label_map_path)
-            if label_map_path is not None
-            else None
-        )
+            label_map_image = None
         return cls(
             date,
             retinotopy_altitude,
@@ -116,9 +111,7 @@ def read_img_forpred(image_path: Path) -> np.ndarray:
     Return:
         numpy array for input image
     """
-    image = cv2.imread(
-        image_path, cv2.IMREAD_GRAYSCALE
-    )  # image shape: (540, 640)
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)  # image shape: (540, 640)
     image = cv2.resize(image, (IMAGE_W, IMAGE_H))  # image shape: (512, 512)
     image = image / 255.0
 
@@ -126,7 +119,7 @@ def read_img_forpred(image_path: Path) -> np.ndarray:
     assert np.min(image) >= 0.0
     assert np.max(image) <= 1.0
 
-    image = np.expand_dims(image, axis=0)  ## [1, H, W]
+    image = np.expand_dims(image, axis=0)  # [1, H, W]
     image = image.astype(np.float32)
 
     return image
@@ -135,6 +128,5 @@ def read_img_forpred(image_path: Path) -> np.ndarray:
 def verify_image_shape(input_shape: tuple, expected_shape: tuple) -> None:
     """Verify the image shape"""
     if input_shape != expected_shape:
-        raise ValueError(
-            f"The shape of input image is {input_shape}, not euqal to the expected shape {expected_shape}!"
-        )
+        s = f"Image shape: {input_shape}, not equal to the expected shape: {expected_shape}!"
+        raise ValueError(s)

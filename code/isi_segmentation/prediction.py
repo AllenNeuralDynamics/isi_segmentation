@@ -11,24 +11,19 @@ The flow of prediction is as follows:
 
 """
 
-import cv2
+import logging
 import os
+from datetime import datetime
+from pathlib import Path
+
+import cv2
 import numpy as np
 import tensorflow as tf
-import copy
-import logging
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
 
-from datetime import datetime
-from isi_segmentation.utils import (
-    ISIData,
-    normalize_sign_map_forpred,
-    read_img_forpred,
-    verify_image_shape,
-)
-from isi_segmentation.postprocess import post_process
 from isi_segmentation.plot import plot_img_label
+from isi_segmentation.postprocess import post_process
+from isi_segmentation.utils import (ISIData, normalize_sign_map_forpred,
+                                    read_img_forpred, verify_image_shape)
 
 
 def predict(
