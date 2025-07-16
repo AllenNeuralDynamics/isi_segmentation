@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -e
+
+# Step 1: Download and extract code-server
+mkdir -p /.code-server
+curl -L "https://github.com/coder/code-server/releases/download/v4.100.3/code-server-4.100.3-linux-amd64.tar.gz" -o /.code-server/code-server.tar.gz
+
+cd /.code-server
+tar -xvf code-server.tar.gz
+rm code-server.tar.gz
+
+# Step 2: Link binary to /usr/bin
+ln -sf /.code-server/code-server-4.100.3-linux-amd64/bin/code-server /usr/bin/code-server
+
+# Step 3: Install extensions
+mkdir -p /.vscode/extensions
+
+extensions=(
+    "REditorSupport.R"
+    "continue.continue"
+    "ms-python.python"
+    "ms-toolsai.jupyter"
+    "reageyao.bioSyntax"
+    "saoudrizwan.claude-dev"
+)
+
+for ext in "${extensions[@]}"; do
+    code-server --extensions-dir="/.vscode/extensions" --install-extension "$ext"
+done
+
+# download and install vscode extension from file
+# for extensions not available in the default open-vsx registry
+
+# run from within a workstation or in postinstall
+# won't work in postinstall if extensions folder has been moved to inside capsule filesystem!
+download_and_install_extension() {
+    publisher=$1
+    name=$2
+    version=$3
+    file=/tmp/$publisher.$name.$version.vsix
+    curl -fL http://${publisher}.gallery.vsassets.io/_apis/public/gallery/publisher/${publisher}/extension/${name}/${version}/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage \
+        --output $file
+    code-server --extensions-dir=/.vscode/extensions --install-extension $file
+}
+download_and_install_extension github copilot 1.326.0
+download_and_install_extension github copilot-chat 0.27.3
+
+# install mcp 
+uv tool install aind-metadata-mcp
