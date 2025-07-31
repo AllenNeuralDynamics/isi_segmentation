@@ -24,7 +24,7 @@ def make_processing(
     line_alpha=100.0,
     ecc_zero_max=50.0,
     ecc_v1_max=50.0
-):
+) -> Processing:
     """Create a Processing object for ISI segmentation pipeline."""
     
     current_time = datetime.datetime.now()
