@@ -8,10 +8,36 @@ from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
                                                    QCStatus, QualityControl,
                                                    Stage, Status)
 from aind_data_schema_models.modalities import Modality
+import json
 
 
-def make_data_description():
-    return None
+def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
+    """Read data_description.json from input directory.
+    
+    Parameters
+    ----------
+    input_dir : str
+        Directory where data_description.json is located. Defaults to "../data".
+    
+    Returns
+    -------
+    DataDescriptionUpgrade
+        An upgraded DataDescriptionUpgrade object based on the existing data description.
+    """
+    data_description = None
+    
+    if input_dir:
+        data_desc_path = Path(input_dir) / "data_description.json"
+        if data_desc_path.exists():
+            with open(data_desc_path, 'r') as f:
+                data_description = json.load(f)
+    data_description_upgrader = DataDescriptionUpgrade(
+        old_data_description_dict=data_description,
+    )
+    data_upgrader = data_description_upgrader.upgrade()
+    data_upgrader.modality = [Modality.ISI]
+
+    return data_upgrader
 
 
 def make_processing(
