@@ -1,0 +1,43 @@
+{
+  "describedBy": "https://raw.githubusercontent.com/AllenInstitute/aind-data-schema/main/src/aind_data_schema/core/data_description.py",
+  "schema_version": "1.0.0",
+  "license": "CC-BY-4.0",
+  "platform": {
+    "abbreviation": "ISI",
+    "name": "Intrinsic Signal Imaging"
+  },
+  "subject_id": "test_subject",
+  "creation_time": "2025-07-31T12:00:00",
+  "label": "Test ISI Data",
+  "name": "test_isi_dataset",
+  "institution": {
+    "name": "Allen Institute for Neural Dynamics",
+    "abbreviation": "AIND"
+  },
+  "funding_source": [
+    {
+      "funder": {
+        "name": "Allen Institute"
+      }
+    }
+  ],
+  "data_level": "derived",
+  "group": "Neural Dynamics",
+  "investigators": [
+    {
+      "name": "Test Investigator",
+      "email": "test@alleninstitute.org",
+      "orcid": "0000-0000-0000-0000"
+    }
+  ],
+  "project_name": "ISI Segmentation Test",
+  "restrictions": "None",
+  "modality": [
+    {
+      "abbreviation": "ISI",
+      "name": "Intrinsic Signal Imaging"
+    }
+  ],
+  "related_data": [],
+  "data_summary": "Test dataset for ISI segmentation pipeline"
+}
