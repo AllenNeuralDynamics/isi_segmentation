@@ -31,6 +31,10 @@
 					"version": "1.4.0"
 				},
 				{
+					"name": "aind-metadata-upgrader",
+					"version": "0.0.25"
+				},
+				{
 					"name": "gdown",
 					"version": "5.2.0"
 				},
