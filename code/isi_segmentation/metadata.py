@@ -1,35 +1,37 @@
 import datetime
+import json
 from pathlib import Path
 
 from aind_data_schema.core.data_description import DataDescription, DataLevel
-from aind_metadata_upgrader.data_description_upgrade import DataDescriptionUpgrade
-from aind_data_schema.core.processing import Processing, DataProcess, PipelineProcess
+from aind_data_schema.core.processing import (DataProcess, PipelineProcess,
+                                              Processing)
 from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
                                                    QCStatus, QualityControl,
                                                    Stage, Status)
 from aind_data_schema_models.modalities import Modality
-import json
+from aind_metadata_upgrader.data_description_upgrade import \
+    DataDescriptionUpgrade
 
 
 def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
     """Read data_description.json from input directory.
-    
+
     Parameters
     ----------
     input_dir : str
         Directory where data_description.json is located. Defaults to "../data".
-    
+
     Returns
     -------
     DataDescriptionUpgrade
         An upgraded DataDescriptionUpgrade object based on the existing data description.
     """
     data_description = None
-    
+
     if input_dir:
         data_desc_path = Path(input_dir) / "data_description.json"
         if data_desc_path.exists():
-            with open(data_desc_path, 'r') as f:
+            with open(data_desc_path, "r") as f:
                 data_description = json.load(f)
     data_description_upgrader = DataDescriptionUpgrade(
         old_data_description_dict=data_description,
@@ -41,23 +43,23 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
 
 
 def make_processing(
-    start_time=None, 
-    input_path=None, 
+    start_time=None,
+    input_path=None,
     model_path=None,
     output_dir=None,
     altitude_scale=0.322,
     azimuth_scale=0.383,
     line_alpha=100.0,
     ecc_zero_max=50.0,
-    ecc_v1_max=50.0
+    ecc_v1_max=50.0,
 ) -> Processing:
     """Create a Processing object for ISI segmentation pipeline."""
-    
+
     current_time = datetime.datetime.now()
-    
+
     # Create the main ISI segmentation data process
     isi_segmentation_process = DataProcess(
-        name="Image atlas alignment", # TODO: Review if this is the correct name
+        name="Image atlas alignment",  # TODO: Review if this is the correct name
         software_version="1.0.0",  # Update this to match your actual version
         start_date_time=start_time or current_time,
         end_date_time=current_time,
@@ -71,7 +73,7 @@ def make_processing(
             "line_alpha": line_alpha,
             "ecc_zero_max": ecc_zero_max,
             "ecc_v1_max": ecc_v1_max,
-            "model_path": str(model_path) if model_path else None
+            "model_path": str(model_path) if model_path else None,
         },
         outputs={
             "sign_map": "segmentation/sign_map.png",
@@ -84,26 +86,26 @@ def make_processing(
             "defocus": "qc/defocus.png",
             "isi_overlay": "qc/isi_overlay.png",
             "eccentricity_retinotopic_zero": "qc/eccentricity_retinotopic_zero.png",
-            "eccentricity_v_one_centroid": "qc/eccentricity_v_one_centroid.png"
+            "eccentricity_v_one_centroid": "qc/eccentricity_v_one_centroid.png",
         },
-        notes="Automated segmentation of intrinsic signal imaging data to identify visual cortical areas"
+        notes="Automated segmentation of intrinsic signal imaging data to identify visual cortical areas",
     )
-    
+
     # Create the PipelineProcess object
     pipeline_process = PipelineProcess(
         data_processes=[isi_segmentation_process],
         processor_full_name="ISI Segmentation Pipeline",
         pipeline_version="1.0.0",
         pipeline_url="https://github.com/AllenNeuralDynamics/isi_segmentation",
-        note="Automated segmentation pipeline for intrinsic signal imaging data"
+        note="Automated segmentation pipeline for intrinsic signal imaging data",
     )
-    
+
     # Create the Processing object
     processing = Processing(
         processing_pipeline=pipeline_process,
-        notes="Processing pipeline for ISI segmentation and quality control"
+        notes="Processing pipeline for ISI segmentation and quality control",
     )
-    
+
     return processing
 
 

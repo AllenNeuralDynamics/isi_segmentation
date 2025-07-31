@@ -1,20 +1,18 @@
 """Run inference on a sign map"""
 
 import argparse
+import glob
+import json
+import logging
+import os
+import shutil
 from datetime import datetime
+from pathlib import Path
+
+from isi_segmentation.metadata import (make_data_description, make_processing,
+                                       make_quality_control)
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
-from isi_segmentation.metadata import (
-    make_data_description,
-    make_processing,
-    make_quality_control,
-)
-import os, glob
-import logging
-from pathlib import Path
-import json
-import shutil
-
 
 if __name__ == "__main__":
     # parse commandline args
@@ -159,7 +157,7 @@ if __name__ == "__main__":
 
     with open(region_metrics_path, "w") as f:
         json.dump(region_metrics, f, indent=3)
-    
+
     dd = make_data_description()
     if dd:
         dd.write_standard_file(output_directory="../results")
@@ -173,7 +171,7 @@ if __name__ == "__main__":
         azimuth_scale=args.azimuth_scale,
         line_alpha=args.line_alpha,
         ecc_zero_max=args.ecc_zero_max,
-        ecc_v1_max=args.ecc_v1_max
+        ecc_v1_max=args.ecc_v1_max,
     )
     if processing:
         processing.write_standard_file(output_directory="../results")
@@ -192,14 +190,14 @@ if __name__ == "__main__":
     )
     if qc:
         qc.write_standard_file(output_directory="../results")
-    
+
     data_pattern = "../data/*/"
     results_dir = "../results"
-    
+
     for data_dir in glob.glob(data_pattern):
         rig_path = os.path.join(data_dir, "rig.json")
         instrument_path = os.path.join(data_dir, "instrument.json")
-        
+
         if os.path.exists(rig_path):
             shutil.copy2(rig_path, results_dir)
             logging.info(f"Copied rig.json from {data_dir} to {results_dir}")
