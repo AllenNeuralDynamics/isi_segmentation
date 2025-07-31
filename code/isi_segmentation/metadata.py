@@ -35,8 +35,8 @@ def make_processing(
         software_version="1.0.0",  # Update this to match your actual version
         start_date_time=start_time or current_time,
         end_date_time=current_time,
-        input_location=Path(input_path) if input_path else Path("../data"),
-        output_location=Path(output_dir) if output_dir else Path("../results"),
+        input_location=str(Path(input_path)) if input_path else "../data",
+        output_location=str(Path(output_dir)) if output_dir else "../results",
         code_url="https://github.com/AllenNeuralDynamics/isi_segmentation",  # Update if different
         code_version="main",  # Update to actual commit hash or version
         parameters={
