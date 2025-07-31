@@ -13,6 +13,7 @@ import os, glob
 import logging
 from pathlib import Path
 import json
+import shutil
 
 
 if __name__ == "__main__":
@@ -191,5 +192,21 @@ if __name__ == "__main__":
     )
     if qc:
         qc.write_standard_file(output_directory="../results")
+    
+    data_pattern = "../data/*/"
+    results_dir = "../results"
+    
+    for data_dir in glob.glob(data_pattern):
+        rig_path = os.path.join(data_dir, "rig.json")
+        instrument_path = os.path.join(data_dir, "instrument.json")
+        
+        if os.path.exists(rig_path):
+            shutil.copy2(rig_path, results_dir)
+            logging.info(f"Copied rig.json from {data_dir} to {results_dir}")
+            break
+        elif os.path.exists(instrument_path):
+            shutil.copy2(instrument_path, results_dir)
+            logging.info(f"Copied instrument.json from {data_dir} to {results_dir}")
+            break
 
     logging.info("Run complete.")
