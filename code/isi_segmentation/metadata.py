@@ -31,7 +31,7 @@ def make_processing(
     
     # Create the main ISI segmentation data process
     isi_segmentation_process = DataProcess(
-        name="ISI Segmentation",
+        name="Image atlas alignment", # TODO: Review if this is the correct name
         software_version="1.0.0",  # Update this to match your actual version
         start_date_time=start_time or current_time,
         end_date_time=current_time,
