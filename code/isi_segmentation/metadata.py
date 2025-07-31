@@ -2,7 +2,8 @@ import datetime
 from pathlib import Path
 
 from aind_data_schema.core.data_description import DataDescription, DataLevel
-from aind_data_schema.core.processing import Processing
+from aind_metadata_upgrader.data_description_upgrade import DataDescriptionUpgrade
+from aind_data_schema.core.processing import Processing, DataProcess, PipelineProcess
 from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
                                                    QCStatus, QualityControl,
                                                    Stage, Status)
@@ -13,8 +14,71 @@ def make_data_description():
     return None
 
 
-def make_processing():
-    return None
+def make_processing(
+    start_time=None, 
+    input_path=None, 
+    model_path=None,
+    output_dir=None,
+    altitude_scale=0.322,
+    azimuth_scale=0.383,
+    line_alpha=100.0,
+    ecc_zero_max=50.0,
+    ecc_v1_max=50.0
+):
+    """Create a Processing object for ISI segmentation pipeline."""
+    
+    current_time = datetime.datetime.now()
+    
+    # Create the main ISI segmentation data process
+    isi_segmentation_process = DataProcess(
+        name="ISI Segmentation",
+        software_version="1.0.0",  # Update this to match your actual version
+        start_date_time=start_time or current_time,
+        end_date_time=current_time,
+        input_location=Path(input_path) if input_path else Path("../data"),
+        output_location=Path(output_dir) if output_dir else Path("../results"),
+        code_url="https://github.com/AllenNeuralDynamics/isi_segmentation",  # Update if different
+        code_version="main",  # Update to actual commit hash or version
+        parameters={
+            "altitude_scale": altitude_scale,
+            "azimuth_scale": azimuth_scale,
+            "line_alpha": line_alpha,
+            "ecc_zero_max": ecc_zero_max,
+            "ecc_v1_max": ecc_v1_max,
+            "model_path": str(model_path) if model_path else None
+        },
+        outputs={
+            "sign_map": "segmentation/sign_map.png",
+            "label_map": "segmentation/label_map.png",
+            "target_map": "segmentation/target_map.png",
+            "region_metrics": "segmentation/region_metrics.json",
+            "retinotopy_vertical": "qc/retinotopy_vertical.png",
+            "retinotopy_horizontal": "qc/retinotopy_horizontal.png",
+            "vasculature": "qc/vasculature.png",
+            "defocus": "qc/defocus.png",
+            "isi_overlay": "qc/isi_overlay.png",
+            "eccentricity_retinotopic_zero": "qc/eccentricity_retinotopic_zero.png",
+            "eccentricity_v_one_centroid": "qc/eccentricity_v_one_centroid.png"
+        },
+        notes="Automated segmentation of intrinsic signal imaging data to identify visual cortical areas"
+    )
+    
+    # Create the PipelineProcess object
+    pipeline_process = PipelineProcess(
+        data_processes=[isi_segmentation_process],
+        processor_full_name="ISI Segmentation Pipeline",
+        pipeline_version="1.0.0",
+        pipeline_url="https://github.com/AllenNeuralDynamics/isi_segmentation",
+        note="Automated segmentation pipeline for intrinsic signal imaging data"
+    )
+    
+    # Create the Processing object
+    processing = Processing(
+        processing_pipeline=pipeline_process,
+        notes="Processing pipeline for ISI segmentation and quality control"
+    )
+    
+    return processing
 
 
 def make_quality_control(

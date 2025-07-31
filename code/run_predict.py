@@ -1,6 +1,7 @@
 """Run inference on a sign map"""
 
 import argparse
+from datetime import datetime
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
 from isi_segmentation.metadata import (
@@ -72,7 +73,8 @@ if __name__ == "__main__":
         default=50.0,
         help="Max value for eccentricity_V1_centroid windowing",
     )
-
+    start_time = datetime.now()
+    logging.info(f"Script started at {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -156,12 +158,22 @@ if __name__ == "__main__":
 
     with open(region_metrics_path, "w") as f:
         json.dump(region_metrics, f, indent=3)
-
+    
     dd = make_data_description()
     if dd:
         dd.write_standard_file(output_directory="../results")
 
-    processing = make_processing()
+    processing = make_processing(
+        start_time=start_time,
+        input_path=hdf5_path,
+        model_path=args.model_path,
+        output_dir=args.output_dir,
+        altitude_scale=args.altitude_scale,
+        azimuth_scale=args.azimuth_scale,
+        line_alpha=args.line_alpha,
+        ecc_zero_max=args.ecc_zero_max,
+        ecc_v1_max=args.ecc_v1_max
+    )
     if processing:
         processing.write_standard_file(output_directory="../results")
 
