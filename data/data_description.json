@@ -4,9 +4,9 @@
   "license": "CC-BY-4.0",
   "platform": {
     "abbreviation": "ISI",
-    "name": "Intrinsic Signal Imaging"
+    "name": "Intrinsic signal imaging platform"
   },
-  "subject_id": "test_subject",
+  "subject_id": "123456",
   "creation_time": "2025-07-31T12:00:00",
   "label": "Test ISI Data",
   "name": "test_isi_dataset",
@@ -22,12 +22,11 @@
     }
   ],
   "data_level": "derived",
-  "group": "Neural Dynamics",
+  "group": "ophys",
+  "input_data_name": "ISI_123456_2025-10-00_12-22-11",
   "investigators": [
     {
-      "name": "Test Investigator",
-      "email": "test@alleninstitute.org",
-      "orcid": "0000-0000-0000-0000"
+      "name": "Test Investigator"
     }
   ],
   "project_name": "ISI Segmentation Test",
