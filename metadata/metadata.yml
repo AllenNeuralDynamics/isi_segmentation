@@ -1,2 +1,8 @@
 metadata_version: 1
 name: ISI Segmentation and Statistics
+description: This is a repository for segmenting visual cortex areas for sign map.
+  The model was trained on about 2000 isi-experiment data using UNet and TensorFlow.
+authors:
+- name: Di Wang
+- name: David Feng
+- name: Arielle Leon
