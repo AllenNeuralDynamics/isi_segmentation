@@ -14,6 +14,13 @@ from isi_segmentation.metadata import (make_data_description, make_processing,
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
 
+
+def copy_schema_file(filepath: Path, output_directory: Path):
+    """Copy a schema file to the output directory if it exists."""
+    if os.path.exists(filepath):
+        shutil.copy2(filepath, output_directory)
+        print(f"Copied {filepath.name} to {output_directory}")
+
 if __name__ == "__main__":
     # parse commandline args
     parser = argparse.ArgumentParser()
@@ -191,20 +198,20 @@ if __name__ == "__main__":
     if qc:
         qc.write_standard_file(output_directory="../results")
 
-    data_pattern = "../data/*/"
-    results_dir = "../results"
+    data_pattern = Path("../data/")
+    results_dir = Path("../results")
 
-    for data_dir in glob.glob(data_pattern):
-        rig_path = os.path.join(data_dir, "rig.json")
-        instrument_path = os.path.join(data_dir, "instrument.json")
-
-        if os.path.exists(rig_path):
-            shutil.copy2(rig_path, results_dir)
-            logging.info(f"Copied rig.json from {data_dir} to {results_dir}")
-            break
-        elif os.path.exists(instrument_path):
-            shutil.copy2(instrument_path, results_dir)
-            logging.info(f"Copied instrument.json from {data_dir} to {results_dir}")
-            break
-
+    rig_json = next(data_pattern.rglob("rig.json"),"")
+    if rig_json:
+        copy_schema_file(rig_json, results_dir)
+    instrument_json = next(data_pattern.rglob("instrument.json"),"")
+    if instrument_json:
+        copy_schema_file(instrument_json, results_dir)
+    
+    session_json = next(data_pattern.rglob("session.json"),"")
+    if session_json:
+        copy_schema_file(session_json, results_dir)
+    acquisition_json = next(data_pattern.rglob("acquisition.json"),"")
+    if acquisition_json:
+        copy_schema_file(acquisition_json, results_dir)
     logging.info("Run complete.")
