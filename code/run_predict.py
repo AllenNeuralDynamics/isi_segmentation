@@ -19,7 +19,7 @@ def copy_schema_file(filepath: Path, output_directory: Path):
     """Copy a schema file to the output directory if it exists."""
     if os.path.exists(filepath):
         shutil.copy2(filepath, output_directory)
-        logging.info(f"Copied {filepath.basename} to {output_directory}")
+        print(f"Copied {filepath.name} to {output_directory}")
 
 if __name__ == "__main__":
     # parse commandline args
@@ -198,20 +198,20 @@ if __name__ == "__main__":
     if qc:
         qc.write_standard_file(output_directory="../results")
 
-    data_pattern = Path("../data/*/")
+    data_pattern = Path("../data/")
     results_dir = Path("../results")
 
-    rig_json = next(data_pattern.glob("rig.json"),"")
+    rig_json = next(data_pattern.rglob("rig.json"),"")
     if rig_json:
         copy_schema_file(rig_json, results_dir)
-    instrument_json = next(data_pattern.glob("instrument.json"),"")
+    instrument_json = next(data_pattern.rglob("instrument.json"),"")
     if instrument_json:
         copy_schema_file(instrument_json, results_dir)
     
-    session_json = next(data_pattern.glob("session.json"),"")
+    session_json = next(data_pattern.rglob("session.json"),"")
     if session_json:
         copy_schema_file(session_json, results_dir)
-    acquisition_json = next(data_pattern.glob("acquisition.json"),"")
+    acquisition_json = next(data_pattern.rglob("acquisition.json"),"")
     if acquisition_json:
         copy_schema_file(acquisition_json, results_dir)
     logging.info("Run complete.")
