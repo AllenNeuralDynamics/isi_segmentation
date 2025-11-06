@@ -201,17 +201,17 @@ if __name__ == "__main__":
     data_pattern = Path("../data/*/")
     results_dir = Path("../results")
 
-    rig_json = next(data_pattern.glob("rig.json",""))
+    rig_json = next(data_pattern.glob("rig.json"),"")
     if rig_json:
         copy_schema_file(rig_json, results_dir)
-    instrument_json = next(data_pattern.glob("instrument.json",""))
+    instrument_json = next(data_pattern.glob("instrument.json"),"")
     if instrument_json:
         copy_schema_file(instrument_json, results_dir)
     
-    session_json = next(data_pattern.glob("session.json",""))
+    session_json = next(data_pattern.glob("session.json"),"")
     if session_json:
         copy_schema_file(session_json, results_dir)
-    acquisition_json = next(data_pattern.glob("acquisition.json",""))
+    acquisition_json = next(data_pattern.glob("acquisition.json"),"")
     if acquisition_json:
         copy_schema_file(acquisition_json, results_dir)
     logging.info("Run complete.")
