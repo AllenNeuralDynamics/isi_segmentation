@@ -1,11 +1,9 @@
-# hash:sha256:8569f240669fc1419df98eb7bdc8edcf140f00120f584a75f0166b4133fbd8e6
+# hash:sha256:3c3932d48baa944cf9a5404439c681a82207b0b12236ff048a2ff80216ef08b3
 ARG REGISTRY_HOST
 FROM $REGISTRY_HOST/codeocean/jupyterlab:3.6.1-miniconda4.12.0-python3.9-ubuntu20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
-
 ARG GIT_ASKPASS
-ARG GIT_ACCESS_TOKEN
 COPY git-askpass /
 
 RUN apt-get update \
@@ -13,6 +11,7 @@ RUN apt-get update \
         ffmpeg=7:4.2.7-0ubuntu0.1 \
         libsm6=2:1.2.3-1 \
         libxext6=2:1.3.4-0ubuntu1 \
+        vim=2:8.1.2269-1ubuntu5.32 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U --no-cache-dir \
@@ -28,4 +27,5 @@ RUN pip install -U --no-cache-dir \
     uv==0.7.15
 
 COPY postInstall /
-RUN /postInstall
+RUN --mount=type=secret,id=secrets . /run/secrets/secrets \
+    && /postInstall

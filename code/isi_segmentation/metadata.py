@@ -29,7 +29,7 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
     data_description = None
 
     if input_dir:
-        data_desc_path = Path(input_dir) / "data_description.json"
+        data_desc_path = next(Path(input_dir).rglob("data_description.json"))
         if data_desc_path.exists():
             with open(data_desc_path, "r") as f:
                 data_description = json.load(f)
