@@ -27,13 +27,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input_pattern",
         type=str,
-        default="../data/**/*_processed.hdf5",
+        default="../data/**/**/*_processed.hdf5",
         help="pattern to the hdf5 file which contains the testing sign map",
     )
     parser.add_argument(
         "--model_path",
         type=str,
-        default="../data/isi_segmentation_model/isi_segmentation_model.h5",
+        default="../data/isi_segmentation_model_v1/isi_segmentation_model.h5",
         help="path to the trained isi-segmentation model",
     )
     parser.add_argument(
