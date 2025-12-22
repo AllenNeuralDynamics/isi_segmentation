@@ -2,8 +2,12 @@
 	"version": 1,
 	"attached_datasets": [
 		{
-			"id": "9457ec14-21f3-477d-86ea-2a1f1bcfd64b",
-			"mount": "isi_segmentation_model"
+			"id": "545d6c6e-2311-41c1-882e-ca0f2379ea6c",
+			"mount": "isi_data"
+		},
+		{
+			"id": "fb41f843-0cb4-4c85-875b-80b008fa85a1",
+			"mount": "isi_segmentation_model_v1"
 		}
 	]
 }
