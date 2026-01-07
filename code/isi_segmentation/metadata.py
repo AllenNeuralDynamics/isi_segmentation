@@ -38,6 +38,7 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
     )
     data_upgrader = data_description_upgrader.upgrade()
     data_upgrader.modality = [Modality.ISI]
+    data_upgrader.data_level = "derived"
 
     return data_upgrader
 
