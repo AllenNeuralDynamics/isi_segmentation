@@ -2,18 +2,16 @@ import datetime
 import json
 from pathlib import Path
 
-from aind_data_schema.core.data_description import DataDescription, DataLevel
+from aind_data_schema.core.data_description import DataDescription, DataLevel, DerivedDataDescription
 from aind_data_schema.core.processing import (DataProcess, PipelineProcess,
                                               Processing)
 from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
                                                    QCStatus, QualityControl,
                                                    Stage, Status)
 from aind_data_schema_models.modalities import Modality
-from aind_metadata_upgrader.data_description_upgrade import \
-    DataDescriptionUpgrade
 
 
-def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
+def make_data_description(input_dir="../data") -> DerivedDataDescription:
     """Read data_description.json from input directory.
 
     Parameters
@@ -23,8 +21,8 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
 
     Returns
     -------
-    DataDescriptionUpgrade
-        An upgraded DataDescriptionUpgrade object based on the existing data description.
+    DerivedDataDescription
+        An upgraded DerivedDataDescription object based on the existing data description.
     """
     data_description = None
 
@@ -33,14 +31,13 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
         if data_desc_path.exists():
             with open(data_desc_path, "r") as f:
                 data_description = json.load(f)
-    data_description_upgrader = DataDescriptionUpgrade(
-        old_data_description_dict=data_description,
-    )
-    data_upgrader = data_description_upgrader.upgrade()
-    data_upgrader.modality = [Modality.ISI]
-    data_upgrader.data_level = "derived"
+    data_description = DataDescription(**data_description)
+    data_description.modality = [Modality.ISI]
+    derived_data_description = DerivedDataDescription.from_data_description(
+                                data_description, process_name="processed"
+                            )
 
-    return data_upgrader
+    return derived_data_description
 
 
 def make_processing(
