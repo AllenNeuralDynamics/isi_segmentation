@@ -9,11 +9,9 @@ from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
                                                    QCStatus, QualityControl,
                                                    Stage, Status)
 from aind_data_schema_models.modalities import Modality
-from aind_metadata_upgrader.data_description_upgrade import \
-    DataDescriptionUpgrade
 
 
-def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
+def make_data_description(input_dir="../data") -> DerivedDataDescription:
     """Read data_description.json from input directory.
 
     Parameters
@@ -23,8 +21,8 @@ def make_data_description(input_dir="../data") -> DataDescriptionUpgrade:
 
     Returns
     -------
-    DataDescriptionUpgrade
-        An upgraded DataDescriptionUpgrade object based on the existing data description.
+    DerivedDataDescription
+        An upgraded DerivedDataDescription object based on the existing data description.
     """
     data_description = None
 
