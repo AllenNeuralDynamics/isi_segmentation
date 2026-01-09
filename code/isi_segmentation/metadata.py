@@ -118,10 +118,21 @@ def make_quality_control(
     eccentricity_retinotopic_zero_path: Path,
     eccentricity_v_one_centroid_path: Path,
     target_map_path: Path,
+    region_metrics_path: Path
 ):
 
     t = datetime.datetime.now()
     passed = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
+    pending = QCStatus(evaluator="Automated", status=Status.PENDING, timestamp=t)
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            region_metrics = json.load(f)
+            visp_region_metrics = region_metrics['VISp']
+    except:
+        #gracefully handle missing region metrics or missing "VISp" key
+        visp_region_metrics = {}
+        
 
     segmentation_eval = QCEvaluation(
         name="Sign map segmentation",
@@ -133,23 +144,30 @@ def make_quality_control(
                 name="Sign map",
                 description="Qualitative evaluation of the sign map",
                 value="passed",
-                reference=sign_map_path,
+                reference=str(sign_map_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Label map",
                 description="Qualitative check of predicted area labels",
                 value="passed",
-                reference=label_map_path,
+                reference=str(label_map_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Target map",
                 description="Qualitative evaluation of ISI target map",
                 value="passed",
-                reference=target_map_path,
+                reference=str(target_map_path),
                 status_history=[passed],
             ),
+            QCMetric(
+                name="V1 Retinotopic metric",
+                description="Region metrics of VISp",
+                value=visp_region_metrics,
+                reference=None,
+                status_history=[pending]
+            )
         ],
         notes="",
         created=t,
@@ -165,49 +183,49 @@ def make_quality_control(
                 name="Horizontal retinotopy",
                 description="Qualitative evaluation of horizontal retinotopy image",
                 value="passed",
-                reference=retinotopy_horizontal_path,
+                reference=str(retinotopy_horizontal_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Vertical retinotopy",
                 description="Qualitative evaluation of vertical retinotopy image",
                 value="passed",
-                reference=retinotopy_vertical_path,
+                reference=str(retinotopy_vertical_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Vasculature",
                 description="Qualitative evaluation of vasculature in cranial window",
                 value="passed",
-                reference=vasculature_path,
+                reference=str(vasculature_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Imaging plane (defocus)",
                 description="Qualitative evaluation of ISI imaging plane via defocused image",
                 value="passed",
-                reference=isi_imaging_plane_path,
+                reference=str(isi_imaging_plane_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Imaging plane (overlay)",
                 description="Qualitative evaluation of ISI imaging plane via overlaid sign map",
                 value="passed",
-                reference=isi_overlay_path,
+                reference=str(isi_overlay_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Eccentricity (retinotopic zero)",
                 description="Qualitative evaluation of eccentricity relative to retinotopic zero",
                 value="passed",
-                reference=eccentricity_retinotopic_zero_path,
+                reference=str(eccentricity_retinotopic_zero_path),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Eccentricity (VISp zero)",
                 description="Qualitative evaluation of eccentricity relative to primary visual cortex",
                 value="passed",
-                reference=eccentricity_v_one_centroid_path,
+                reference=str(eccentricity_v_one_centroid_path),
                 status_history=[passed],
             ),
         ],
