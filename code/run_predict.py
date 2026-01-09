@@ -102,13 +102,15 @@ if __name__ == "__main__":
     # predict the label map for the sign map.
     data = ISIData.from_files(hdf5_path)
 
-    sign_map_path = os.path.join(segmentation_dir, "sign_map.png")
-    label_map_path = os.path.join(segmentation_dir, "label_map.png")
-    region_metrics_path = os.path.join(segmentation_dir, "region_metrics.json")
+    sign_map_path = Path(os.path.join(segmentation_dir, "sign_map.png"))
+    label_map_id_path = Path(os.path.join(segmentation_dir, "label_map_ids.png"))
+    label_map_path = Path(os.path.join(segmentation_dir, "label_map.png"))
+    region_metrics_path = Path(os.path.join(segmentation_dir, "region_metrics.json"))
 
     data.label_map_image = predict(
         data=data,
         sign_map_path=sign_map_path,
+        label_map_id_path=label_map_id_path,
         label_map_path=label_map_path,
         model_path=args.model_path,
     )
@@ -194,6 +196,7 @@ if __name__ == "__main__":
         eccentricity_retinotopic_zero_path,
         eccentricity_v_one_centroid_path,
         target_map_path,
+        region_metrics_path
     )
     if qc:
         qc.write_standard_file(output_directory="../results")

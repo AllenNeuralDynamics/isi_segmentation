@@ -124,14 +124,20 @@ def make_quality_control(
     t = datetime.datetime.now()
     passed = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
     pending = QCStatus(evaluator="Automated", status=Status.PENDING, timestamp=t)
+    failed = QCStatus(evaluator="Automated", status=Status.FAIL, timestamp=t)
+
+
 
     try:
-        with path.open("r", encoding="utf-8") as f:
+        with region_metrics_path.open("r", encoding="utf-8") as f:
             region_metrics = json.load(f)
             visp_region_metrics = region_metrics['VISp']
+            region_metrics_status = pending
     except:
         #gracefully handle missing region metrics or missing "VISp" key
         visp_region_metrics = {}
+        region_metrics_status = failed
+
         
 
     segmentation_eval = QCEvaluation(
@@ -166,7 +172,7 @@ def make_quality_control(
                 description="Region metrics of VISp",
                 value=visp_region_metrics,
                 reference=None,
-                status_history=[pending]
+                status_history=[region_metrics_status]
             )
         ],
         notes="",

@@ -20,7 +20,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from isi_segmentation.plot import plot_img_label
+from isi_segmentation.plot import plot_img_label, colorize_and_annotate_label_map
 from isi_segmentation.postprocess import post_process
 from isi_segmentation.utils import (ISIData, normalize_sign_map_forpred,
                                     read_img_forpred, verify_image_shape)
@@ -29,6 +29,7 @@ from isi_segmentation.utils import (ISIData, normalize_sign_map_forpred,
 def predict(
     data: ISIData,
     sign_map_path: Path,
+    label_map_id_path: Path,
     label_map_path: Path,
     model_path: Path,
 ) -> np.ndarray:
@@ -51,7 +52,7 @@ def predict(
             "model_path not a valid file, please download the trained model and update model_path"
         )
 
-    if label_map_path[-4:] != ".png":
+    if str(label_map_path)[-4:] != ".png":
         raise NameError("The output label map will be saved as .png file")
 
     # ----------------------------------
@@ -114,22 +115,26 @@ def predict(
     closeIter = 5
     openIter = 5
     # path to save intermediate images
-    pred_dir_prefix = label_map_path.replace(".png", "")
+    pred_dir_prefix = str(label_map_path).replace(".png", "")
     post_pred = post_process(pred, closeIter, openIter, pred_dir_prefix)
     verify_image_shape(post_pred.shape, sign_map.shape)
 
     # ----------------------------------
+    # Save the label map ids to label_map_id_path
+    # ----------------------------------
+    logging.info(f"Save the label map ids to {label_map_id_path}")
+    cv2.imwrite(label_map_id_path, post_pred)
+
+    # ----------------------------------
     # Save the label map to label_map_path
     # ----------------------------------
-
-    logging.info(f"Save the label map to {label_map_path}")
-    cv2.imwrite(label_map_path, post_pred)
+    colorize_and_annotate_label_map(label_map_id_path, label_map_path)
 
     # ----------------------------------
     # Plot results
     # ----------------------------------
 
-    savefig_path = label_map_path.replace(".png", "_visualize.png")
+    savefig_path = str(label_map_path).replace(".png", "_visualize.png")
     logging.info(f"Plot segmentation, save to {savefig_path}")
 
     plot_img_label(sign_map_path, label_map_path, savefig_path)
