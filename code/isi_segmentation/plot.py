@@ -1,4 +1,5 @@
 """Helper plot functions"""
+
 from __future__ import annotations
 
 import os
@@ -88,8 +89,9 @@ def colorize_label_map(label_map: np.ndarray) -> np.ndarray:
     return label_map_3d
 
 
-
-def colorize_and_annotate_label_map(label_map_ids_path: Path, label_map_path: Path) -> None:
+def colorize_and_annotate_label_map(
+    label_map_ids_path: Path, label_map_path: Path
+) -> None:
     """
     Load a grayscale label-map (class IDs), colorize it using `colorize_label_map`,
     annotate each (non-background) class with its name at the class mask centroid,
@@ -122,7 +124,12 @@ def colorize_and_annotate_label_map(label_map_ids_path: Path, label_map_path: Pa
     label_map_rgb = colorize_label_map(label_map_ids)
 
     # Build figure and show RGB (matplotlib expects RGB)
-    fig, ax = plt.subplots(1, 1, figsize=(label_map_rgb.shape[1] / 100, label_map_rgb.shape[0] / 100), dpi=100)
+    fig, ax = plt.subplots(
+        1,
+        1,
+        figsize=(label_map_rgb.shape[1] / 100, label_map_rgb.shape[0] / 100),
+        dpi=100,
+    )
     ax.imshow(label_map_rgb)
     ax.set_title("Label map")
     ax.axis("off")
@@ -134,7 +141,7 @@ def colorize_and_annotate_label_map(label_map_ids_path: Path, label_map_path: Pa
     # Annotate each class except background (assumes background is 0; matches your classes[1:] pattern)
     for cur_class in classes[1:]:
         # segmented region mask for current class
-        mask = (label_map_ids == cur_class)
+        mask = label_map_ids == cur_class
 
         count = int(mask.sum())
         if count == 0:

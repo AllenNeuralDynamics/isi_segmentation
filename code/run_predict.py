@@ -9,8 +9,11 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-from isi_segmentation.metadata import (make_data_description, make_processing,
-                                       make_quality_control)
+from isi_segmentation.metadata import (
+    make_data_description,
+    make_processing,
+    make_quality_control,
+)
 from isi_segmentation.prediction import predict
 from isi_segmentation.stats import ISIData, ISIMetricsAndVisualization
 
@@ -20,6 +23,7 @@ def copy_schema_file(filepath: Path, output_directory: Path):
     if os.path.exists(filepath):
         shutil.copy2(filepath, output_directory)
         print(f"Copied {filepath.name} to {output_directory}")
+
 
 if __name__ == "__main__":
     # parse commandline args
@@ -93,7 +97,7 @@ if __name__ == "__main__":
 
     logging.info(f"Using sample file: {hdf5_path}")
 
-    segmentation_dir = os.path.join(args.output_dir, "segmentation")
+    segmentation_dir = Path(args.output_dir) / "segmentation"
     os.makedirs(segmentation_dir, exist_ok=True)
 
     qc_dir = os.path.join(args.output_dir, "qc")
@@ -102,9 +106,9 @@ if __name__ == "__main__":
     # predict the label map for the sign map.
     data = ISIData.from_files(hdf5_path)
 
-    sign_map_path = Path(os.path.join(segmentation_dir, "sign_map.png"))
-    label_map_id_path = Path(os.path.join(segmentation_dir, "label_map_ids.png"))
-    label_map_path = Path(os.path.join(segmentation_dir, "label_map.png"))
+    sign_map_path = segmentation_dir / "sign_map.png"
+    label_map_id_path = segmentation_dir / "label_map_ids.png"
+    label_map_path = segmentation_dir / "label_map.png"
     region_metrics_path = Path(os.path.join(segmentation_dir, "region_metrics.json"))
 
     data.label_map_image = predict(
@@ -196,7 +200,7 @@ if __name__ == "__main__":
         eccentricity_retinotopic_zero_path,
         eccentricity_v_one_centroid_path,
         target_map_path,
-        region_metrics_path
+        region_metrics_path,
     )
     if qc:
         qc.write_standard_file(output_directory="../results")
@@ -204,17 +208,17 @@ if __name__ == "__main__":
     data_pattern = Path("../data/")
     results_dir = Path("../results")
 
-    rig_json = next(data_pattern.rglob("rig.json"),"")
+    rig_json = next(data_pattern.rglob("rig.json"), "")
     if rig_json:
         copy_schema_file(rig_json, results_dir)
-    instrument_json = next(data_pattern.rglob("instrument.json"),"")
+    instrument_json = next(data_pattern.rglob("instrument.json"), "")
     if instrument_json:
         copy_schema_file(instrument_json, results_dir)
-    
-    session_json = next(data_pattern.rglob("session.json"),"")
+
+    session_json = next(data_pattern.rglob("session.json"), "")
     if session_json:
         copy_schema_file(session_json, results_dir)
-    acquisition_json = next(data_pattern.rglob("acquisition.json"),"")
+    acquisition_json = next(data_pattern.rglob("acquisition.json"), "")
     if acquisition_json:
         copy_schema_file(acquisition_json, results_dir)
     logging.info("Run complete.")

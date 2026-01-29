@@ -2,12 +2,20 @@ import datetime
 import json
 from pathlib import Path
 
-from aind_data_schema.core.data_description import DataDescription, DataLevel, DerivedDataDescription
-from aind_data_schema.core.processing import (DataProcess, PipelineProcess,
-                                              Processing)
-from aind_data_schema.core.quality_control import (QCEvaluation, QCMetric,
-                                                   QCStatus, QualityControl,
-                                                   Stage, Status)
+from aind_data_schema.core.data_description import (
+    DataDescription,
+    DataLevel,
+    DerivedDataDescription,
+)
+from aind_data_schema.core.processing import DataProcess, PipelineProcess, Processing
+from aind_data_schema.core.quality_control import (
+    QCEvaluation,
+    QCMetric,
+    QCStatus,
+    QualityControl,
+    Stage,
+    Status,
+)
 from aind_data_schema_models.modalities import Modality
 
 
@@ -34,8 +42,8 @@ def make_data_description(input_dir="../data") -> DerivedDataDescription:
     data_description = DataDescription(**data_description)
     data_description.modality = [Modality.ISI]
     derived_data_description = DerivedDataDescription.from_data_description(
-                                data_description, process_name="processed"
-                            )
+        data_description, process_name="processed"
+    )
 
     return derived_data_description
 
@@ -118,7 +126,7 @@ def make_quality_control(
     eccentricity_retinotopic_zero_path: Path,
     eccentricity_v_one_centroid_path: Path,
     target_map_path: Path,
-    region_metrics_path: Path
+    region_metrics_path: Path,
 ):
 
     t = datetime.datetime.now()
@@ -126,19 +134,15 @@ def make_quality_control(
     pending = QCStatus(evaluator="Automated", status=Status.PENDING, timestamp=t)
     failed = QCStatus(evaluator="Automated", status=Status.FAIL, timestamp=t)
 
-
-
     try:
         with region_metrics_path.open("r", encoding="utf-8") as f:
             region_metrics = json.load(f)
-            visp_region_metrics = region_metrics['VISp']
+            visp_region_metrics = region_metrics["VISp"]
             region_metrics_status = pending
     except:
-        #gracefully handle missing region metrics or missing "VISp" key
+        # gracefully handle missing region metrics or missing "VISp" key
         visp_region_metrics = {}
         region_metrics_status = failed
-
-        
 
     segmentation_eval = QCEvaluation(
         name="Sign map segmentation",
@@ -172,8 +176,8 @@ def make_quality_control(
                 description="Region metrics of VISp",
                 value=visp_region_metrics,
                 reference=None,
-                status_history=[region_metrics_status]
-            )
+                status_history=[region_metrics_status],
+            ),
         ],
         notes="",
         created=t,

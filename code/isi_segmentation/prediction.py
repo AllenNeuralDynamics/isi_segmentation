@@ -22,8 +22,12 @@ import tensorflow as tf
 
 from isi_segmentation.plot import plot_img_label, colorize_and_annotate_label_map
 from isi_segmentation.postprocess import post_process
-from isi_segmentation.utils import (ISIData, normalize_sign_map_forpred,
-                                    read_img_forpred, verify_image_shape)
+from isi_segmentation.utils import (
+    ISIData,
+    normalize_sign_map_forpred,
+    read_img_forpred,
+    verify_image_shape,
+)
 
 
 def predict(
