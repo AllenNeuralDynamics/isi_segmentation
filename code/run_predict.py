@@ -221,4 +221,7 @@ if __name__ == "__main__":
     acquisition_json = next(data_pattern.rglob("acquisition.json"), "")
     if acquisition_json:
         copy_schema_file(acquisition_json, results_dir)
+    subject_json = next(data_pattern.rglob("subject.json"), "")
+    if subject_json:
+        copy_schema_file(subject_json, results_dir)
     logging.info("Run complete.")
