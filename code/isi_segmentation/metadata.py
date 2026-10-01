@@ -115,7 +115,13 @@ def make_processing(
     return processing
 
 
+def get_relative_path(filepath: Path, output_dir: Path) -> str:
+    """Get the relative path of a file with respect to the output directory."""
+    return str(filepath.relative_to(output_dir))
+
+
 def make_quality_control(
+    output_dir: Path,
     sign_map_path: Path,
     label_map_path: Path,
     retinotopy_vertical_path: Path,
@@ -154,21 +160,21 @@ def make_quality_control(
                 name="Sign map",
                 description="Qualitative evaluation of the sign map",
                 value="passed",
-                reference=str(sign_map_path),
+                reference=get_relative_path(sign_map_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Label map",
                 description="Qualitative check of predicted area labels",
                 value="passed",
-                reference=str(label_map_path),
+                reference=get_relative_path(label_map_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Target map",
                 description="Qualitative evaluation of ISI target map",
                 value="passed",
-                reference=str(target_map_path),
+                reference=get_relative_path(target_map_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
@@ -193,49 +199,49 @@ def make_quality_control(
                 name="Horizontal retinotopy",
                 description="Qualitative evaluation of horizontal retinotopy image",
                 value="passed",
-                reference=str(retinotopy_horizontal_path),
+                reference=get_relative_path(retinotopy_horizontal_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Vertical retinotopy",
                 description="Qualitative evaluation of vertical retinotopy image",
                 value="passed",
-                reference=str(retinotopy_vertical_path),
+                reference=get_relative_path(retinotopy_vertical_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Vasculature",
                 description="Qualitative evaluation of vasculature in cranial window",
                 value="passed",
-                reference=str(vasculature_path),
+                reference=get_relative_path(vasculature_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Imaging plane (defocus)",
                 description="Qualitative evaluation of ISI imaging plane via defocused image",
                 value="passed",
-                reference=str(isi_imaging_plane_path),
+                reference=get_relative_path(isi_imaging_plane_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Imaging plane (overlay)",
                 description="Qualitative evaluation of ISI imaging plane via overlaid sign map",
                 value="passed",
-                reference=str(isi_overlay_path),
+                reference=get_relative_path(isi_overlay_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Eccentricity (retinotopic zero)",
                 description="Qualitative evaluation of eccentricity relative to retinotopic zero",
                 value="passed",
-                reference=str(eccentricity_retinotopic_zero_path),
+                reference=get_relative_path(eccentricity_retinotopic_zero_path, output_dir),
                 status_history=[passed],
             ),
             QCMetric(
                 name="Eccentricity (VISp zero)",
                 description="Qualitative evaluation of eccentricity relative to primary visual cortex",
                 value="passed",
-                reference=str(eccentricity_v_one_centroid_path),
+                reference=get_relative_path(eccentricity_v_one_centroid_path, output_dir),
                 status_history=[passed],
             ),
         ],
