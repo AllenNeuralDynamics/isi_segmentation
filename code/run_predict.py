@@ -211,7 +211,6 @@ if __name__ == "__main__":
     instrument_json = next(data_pattern.rglob("instrument.json"), "")
     if instrument_json:
         copy_schema_file(instrument_json, results_dir)
-
     session_json = next(data_pattern.rglob("session.json"), "")
     if session_json:
         copy_schema_file(session_json, results_dir)
@@ -221,4 +220,8 @@ if __name__ == "__main__":
     subject_json = next(data_pattern.rglob("subject.json"), "")
     if subject_json:
         copy_schema_file(subject_json, results_dir)
+    procedures_json = next(data_pattern.rglob("procedures.json"), "")
+    if procedures_json:
+        copy_schema_file(procedures_json, results_dir)
+
     logging.info("Run complete.")
