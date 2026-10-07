@@ -100,7 +100,7 @@ if __name__ == "__main__":
     segmentation_dir = Path(args.output_dir) / "segmentation"
     os.makedirs(segmentation_dir, exist_ok=True)
 
-    qc_dir = os.path.join(args.output_dir, "qc")
+    qc_dir = Path(args.output_dir) / "qc"
     os.makedirs(qc_dir, exist_ok=True)
 
     # predict the label map for the sign map.
@@ -131,18 +131,14 @@ if __name__ == "__main__":
         ecc_v1_max=args.ecc_v1_max,
     )
 
-    retinotopy_vertical_path = os.path.join(qc_dir, "retinotopy_vertical.png")
-    retinotopy_horizontal_path = os.path.join(qc_dir, "retinotopy_horizontal.png")
-    vasculature_path = os.path.join(qc_dir, "vasculature.png")
-    isi_imaging_plane_path = os.path.join(qc_dir, "defocus.png")
-    isi_overlay_path = os.path.join(qc_dir, "isi_overlay.png")
-    eccentricity_retinotopic_zero_path = os.path.join(
-        qc_dir, "eccentricity_retinotopic_zero.png"
-    )
-    eccentricity_v_one_centroid_path = os.path.join(
-        qc_dir, "eccentricity_v_one_centroid.png"
-    )
-    target_map_path = os.path.join(segmentation_dir, "target_map.png")
+    retinotopy_vertical_path = qc_dir / "retinotopy_vertical.png"
+    retinotopy_horizontal_path = qc_dir / "retinotopy_horizontal.png"
+    vasculature_path = qc_dir / "vasculature.png"
+    isi_imaging_plane_path = qc_dir / "defocus.png"
+    isi_overlay_path = qc_dir / "isi_overlay.png"
+    eccentricity_retinotopic_zero_path = qc_dir / "eccentricity_retinotopic_zero.png"
+    eccentricity_v_one_centroid_path = qc_dir / "eccentricity_v_one_centroid.png"
+    target_map_path = segmentation_dir / "target_map.png"
 
     # Create and save images using new non-IO create_* methods
     sign_im, mask_im = metrics.create_visual_sign_image()
@@ -190,6 +186,7 @@ if __name__ == "__main__":
         processing.write_standard_file(output_directory="../results")
 
     qc = make_quality_control(
+        args.output_dir,
         sign_map_path,
         label_map_path,
         retinotopy_vertical_path,
@@ -214,11 +211,17 @@ if __name__ == "__main__":
     instrument_json = next(data_pattern.rglob("instrument.json"), "")
     if instrument_json:
         copy_schema_file(instrument_json, results_dir)
-
     session_json = next(data_pattern.rglob("session.json"), "")
     if session_json:
         copy_schema_file(session_json, results_dir)
     acquisition_json = next(data_pattern.rglob("acquisition.json"), "")
     if acquisition_json:
         copy_schema_file(acquisition_json, results_dir)
+    subject_json = next(data_pattern.rglob("subject.json"), "")
+    if subject_json:
+        copy_schema_file(subject_json, results_dir)
+    procedures_json = next(data_pattern.rglob("procedures.json"), "")
+    if procedures_json:
+        copy_schema_file(procedures_json, results_dir)
+
     logging.info("Run complete.")
